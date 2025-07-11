@@ -24,7 +24,7 @@ export function generateVerificationCode(): string {
 }
 
 // Utility to get and update wallet address for a user in Supabase
-export async function getOrCreateWalletAddress(supabase, userId, provider) {
+export async function getOrCreateWalletAddress(supabase, userId, client) {
   // 1. Try to fetch wallet_address from Supabase
   const { data, error } = await supabase
     .from('users')
@@ -36,12 +36,14 @@ export async function getOrCreateWalletAddress(supabase, userId, provider) {
   if (data && data.wallet_address) return data.wallet_address;
 
   // 2. If not present, create a new wallet and save
-  const address = await provider.account?.getAddress();
+  const address = await client.account?.getAddress();
   if (!address) throw new Error('Failed to get wallet address');
+  
   const { error: updateError } = await supabase
     .from('users')
     .update({ wallet_address: address })
     .eq('id', userId);
+    
   if (updateError) throw updateError;
   return address;
 }

@@ -12,6 +12,7 @@
     "@alchemy/aa-accounts": "^3.19.0",
     "@alchemy/aa-alchemy": "^3.19.0",
     "@alchemy/aa-core": "^3.19.0",
+    "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/supabase-js": "latest",
     "@types/qrcode": "^1.5.5",
     "class-variance-authority": "^0.7.1",
@@ -24,7 +25,7 @@
     "react-dom": "^18",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "^1.21.4"
+    "viem": "^2.31.7"
   },
   "devDependencies": {
     "@types/node": "^22",

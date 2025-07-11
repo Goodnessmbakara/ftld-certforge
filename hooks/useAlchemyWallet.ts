@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AlchemyProvider } from "@alchemy/aa-alchemy";
+import { createAlchemySmartAccountClient } from "@alchemy/aa-alchemy";
 import { sepolia } from "viem/chains";
 import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { getOrCreateWalletAddress } from "../lib/utils";
@@ -7,7 +7,7 @@ import { getOrCreateWalletAddress } from "../lib/utils";
 export function useAlchemyWallet() {
   const user = useUser();
   const supabase = useSupabaseClient();
-  const [provider, setProvider] = useState(null);
+  const [client, setClient] = useState(null);
   const [walletAddress, setWalletAddress] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,24 +19,35 @@ export function useAlchemyWallet() {
 
     const setupWallet = async () => {
       try {
-        const chain = sepolia;
-        const entryPointAddress = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
-        const provider = new AlchemyProvider({
-          chain,
-          entryPointAddress,
-          rpcUrl: `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        // Create Alchemy Smart Account Client
+        const smartAccountClient = await createAlchemySmartAccountClient({
+          chain: sepolia,
+          apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!,
+          gasManagerConfig: {
+            policyId: process.env.NEXT_PUBLIC_ALCHEMY_POLICY_ID!,
+          },
         });
-        setProvider(provider);
-        const address = await getOrCreateWalletAddress(supabase, user.id, provider);
+
+        setClient(smartAccountClient);
+
+        // Get or create wallet address and save to Supabase
+        const address = await getOrCreateWalletAddress(supabase, user.id, smartAccountClient);
         setWalletAddress(address);
       } catch (err) {
+        console.error("Error setting up Alchemy wallet:", err);
         setError(err.message || "Failed to setup wallet");
       } finally {
         setLoading(false);
       }
     };
+
     setupWallet();
   }, [user, supabase]);
 
-  return { provider, walletAddress, loading, error };
+  return {
+    client,
+    walletAddress,
+    loading,
+    error,
+  };
 } 
