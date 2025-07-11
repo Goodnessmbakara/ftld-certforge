@@ -65,17 +65,17 @@ export default function HomePage() {
 
           {/* Hero Headlines */}
           <div className="max-w-5xl mx-auto mb-12">
-            <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
+            <h1 className="text-6xl md:text-8xl font-ultra font-bold mb-6 leading-tight">
               <span className="bg-gradient-to-r from-[#00FF7F] via-white to-[#0014A8] bg-clip-text text-transparent">
                 For The Love
               </span>
               <br />
               <span className="text-white">Of DeFi</span>
             </h1>
-            <p className="text-2xl md:text-3xl text-gray-300 mb-4 leading-relaxed">
+            <p className="text-2xl md:text-3xl text-gray-300 mb-4 leading-relaxed font-gill-sans">
               Empowering blockchain education through
             </p>
-            <p className="text-xl md:text-2xl text-[#00FF7F] font-semibold">
+            <p className="text-xl md:text-2xl text-[#00FF7F] font-semibold font-gill-sans">
               verified achievements & community recognition
             </p>
           </div>
@@ -116,14 +116,14 @@ export default function HomePage() {
       {/* Visual Journey Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-6">
+          <h2 className="text-5xl font-ultra font-bold mb-6">
             <span className="text-white">Your Journey to</span>
             <br />
             <span className="bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
               Blockchain Mastery
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto font-gill-sans">
             From learning to certification, we're with you every step of the way
           </p>
         </div>
@@ -176,12 +176,14 @@ export default function HomePage() {
                     />
                   </div>
                   <h3
-                    className="text-2xl font-bold mb-3"
+                    className="text-2xl font-ultra font-bold mb-3"
                     style={{ color: step.color }}
                   >
                     {step.title}
                   </h3>
-                  <p className="text-gray-400 leading-relaxed">{step.desc}</p>
+                  <p className="text-gray-400 leading-relaxed font-gill-sans">
+                    {step.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -192,11 +194,11 @@ export default function HomePage() {
       {/* Social Proof & Community */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-6 text-white">
+          <h2 className="text-5xl font-ultra font-bold mb-6 text-white">
             Trusted by the{" "}
             <span className="text-[#00FF7F]">FTLD Community</span>
           </h2>
-          <p className="text-xl text-gray-400">
+          <p className="text-xl text-gray-400 font-gill-sans">
             Join hundreds of blockchain enthusiasts who've earned their
             credentials
           </p>
@@ -228,11 +230,17 @@ export default function HomePage() {
                     <Star className="w-6 h-6 text-[#00FF7F]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-white">{cert.name}</h4>
-                    <p className="text-sm text-gray-400">{cert.date}</p>
+                    <h4 className="font-bold text-white font-gill-sans">
+                      {cert.name}
+                    </h4>
+                    <p className="text-sm text-gray-400 font-gill-sans">
+                      {cert.date}
+                    </p>
                   </div>
                 </div>
-                <p className="text-gray-300 mb-4">{cert.program}</p>
+                <p className="text-gray-300 mb-4 font-gill-sans">
+                  {cert.program}
+                </p>
                 <div className="flex items-center gap-2 text-[#00FF7F] text-sm">
                   <CheckCircle className="w-4 h-4" />
                   Verified Certificate
@@ -246,7 +254,7 @@ export default function HomePage() {
         <div className="text-center">
           <div className="inline-flex items-center gap-4 bg-[#0014A8]/20 border border-[#0014A8]/40 rounded-full px-8 py-4">
             <Globe className="w-8 h-8 text-[#0014A8]" />
-            <span className="text-xl font-bold text-white">
+            <span className="text-xl font-bold text-white font-gill-sans">
               Powered by Lisk Partnership
             </span>
             <div className="w-2 h-2 bg-[#0014A8] rounded-full animate-pulse"></div>
@@ -257,7 +265,7 @@ export default function HomePage() {
       {/* Enhanced Features Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-6 text-white">
+          <h2 className="text-5xl font-ultra font-bold mb-6 text-white">
             Why Choose <span className="text-[#00FF7F]">FTLD CertForge</span>
           </h2>
         </div>
@@ -300,10 +308,12 @@ export default function HomePage() {
                     style={{ color: feature.color }}
                   />
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-white">
+                <h3 className="text-2xl font-ultra font-bold mb-4 text-white">
                   {feature.title}
                 </h3>
-                <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
+                <p className="text-gray-400 leading-relaxed font-gill-sans">
+                  {feature.desc}
+                </p>
               </div>
             </div>
           ))}
@@ -313,14 +323,14 @@ export default function HomePage() {
       {/* Footer CTA */}
       <section className="container mx-auto px-4 py-20 text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl font-bold mb-6">
+          <h2 className="text-5xl font-ultra font-bold mb-6">
             <span className="text-white">Ready to</span>
             <br />
             <span className="bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
               Get Certified?
             </span>
           </h2>
-          <p className="text-xl text-gray-400 mb-8">
+          <p className="text-xl text-gray-400 mb-8 font-gill-sans">
             Join the FTLD community and showcase your blockchain expertise to
             the world
           </p>

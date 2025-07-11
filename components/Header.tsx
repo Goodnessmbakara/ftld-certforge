@@ -20,33 +20,37 @@ export default function Header() {
               />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">FTLD CertForge</h1>
-              <p className="text-sm text-gray-400">For The Love Of Defi</p>
+              <h1 className="text-2xl font-ultra font-bold text-white">
+                FTLD CertForge
+              </h1>
+              <p className="text-sm text-gray-400 font-gill-sans">
+                For The Love Of Defi
+              </p>
             </div>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-6">
             <Link
               href="/"
-              className="text-gray-300 hover:text-green-400 transition-colors"
+              className="text-gray-300 hover:text-green-400 transition-colors font-gill-sans"
             >
               Home
             </Link>
             <Link
               href="/admin"
-              className="text-gray-300 hover:text-green-400 transition-colors"
+              className="text-gray-300 hover:text-green-400 transition-colors font-gill-sans"
             >
               Admin
             </Link>
             <Link
               href="/students"
-              className="text-gray-300 hover:text-green-400 transition-colors"
+              className="text-gray-300 hover:text-green-400 transition-colors font-gill-sans"
             >
               Students
             </Link>
             <Link
               href="/verify"
-              className="text-gray-300 hover:text-green-400 transition-colors"
+              className="text-gray-300 hover:text-green-400 transition-colors font-gill-sans"
             >
               Verify
             </Link>

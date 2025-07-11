@@ -125,7 +125,7 @@ export default function CertificatePreview({
           />
         </div>
         {/* Certificate Title */}
-        <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-2 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-ultra font-extrabold text-center mb-2 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent tracking-tight">
           Certificate of Completion
         </h1>
         <div className="w-32 h-1.5 bg-[#00FF7F] mx-auto rounded-full mb-8"></div>
@@ -134,13 +134,13 @@ export default function CertificatePreview({
           <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">
             This certifies that
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-2 font-gill-sans leading-tight">
+          <h2 className="text-4xl md:text-5xl font-ultra font-bold text-white mb-2 leading-tight">
             {certificate.studentName}
           </h2>
           <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">
             has successfully completed the
           </p>
-          <h3 className="text-2xl md:text-3xl font-bold text-[#00FF7F] mb-2 font-gill-sans leading-tight">
+          <h3 className="text-2xl md:text-3xl font-ultra font-bold text-[#00FF7F] mb-2 leading-tight">
             {certificate.program}
           </h3>
           <p className="text-lg md:text-xl text-gray-300 font-gill-sans">

@@ -67,6 +67,7 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
+        "ultra": ["Ultra", "serif"],
         "gill-sans": ["Gill Sans", "Gill Sans MT", "Calibri", "Trebuchet MS", "sans-serif"],
       },
       animation: {

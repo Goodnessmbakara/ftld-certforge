@@ -278,11 +278,11 @@ export default function AdminDashboard() {
               <div className="w-16 h-16 bg-[#00FF7F] rounded-full flex items-center justify-center mr-4 shadow-lg">
                 <Award className="w-8 h-8 text-black" />
               </div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
+              <h1 className="text-5xl font-ultra font-bold bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
                 Admin Dashboard
               </h1>
             </div>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto font-gill-sans">
               Generate and manage certificates for FTLD program completions with
               our powerful admin tools
             </p>
@@ -294,28 +294,30 @@ export default function AdminDashboard() {
               <div className="w-12 h-12 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="w-6 h-6 text-black" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
+              <h3 className="text-2xl font-ultra font-bold text-white mb-2">
                 {stats.totalCertificates}+
               </h3>
-              <p className="text-gray-400">Certificates Generated</p>
+              <p className="text-gray-400 font-gill-sans">
+                Certificates Generated
+              </p>
             </div>
             <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 text-center hover:border-[#0014A8] transition-all duration-300">
               <div className="w-12 h-12 bg-[#0014A8] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Award className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
+              <h3 className="text-2xl font-ultra font-bold text-white mb-2">
                 {stats.activePrograms}
               </h3>
-              <p className="text-gray-400">Active Programs</p>
+              <p className="text-gray-400 font-gill-sans">Active Programs</p>
             </div>
             <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 text-center hover:border-[#00FF7F] transition-all duration-300">
               <div className="w-12 h-12 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Zap className="w-6 h-6 text-black" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
+              <h3 className="text-2xl font-ultra font-bold text-white mb-2">
                 {stats.successRate}%
               </h3>
-              <p className="text-gray-400">Success Rate</p>
+              <p className="text-gray-400 font-gill-sans">Success Rate</p>
             </div>
           </div>
 
@@ -326,7 +328,7 @@ export default function AdminDashboard() {
                 <div className="w-10 h-10 bg-[#00FF7F] rounded-lg flex items-center justify-center mr-3">
                   <FileText className="w-5 h-5 text-black" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-ultra font-bold text-white">
                   Single Certificate Generation
                 </h2>
               </div>
@@ -421,7 +423,7 @@ export default function AdminDashboard() {
                 <div className="w-10 h-10 bg-[#0014A8] rounded-lg flex items-center justify-center mr-3">
                   <Upload className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-ultra font-bold text-white">
                   Bulk Certificate Generation
                 </h2>
               </div>

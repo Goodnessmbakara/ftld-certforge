@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Font imports */
+@import url('https://fonts.googleapis.com/css2?family=Ultra&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gill+Sans:wght@300;400;500;600;700&display=swap');
+
 @layer base {
   :root {
     --spring-green: #00ff7f;
@@ -9,6 +13,24 @@
     --black: #000000;
     --white: #ffffff;
     --gray: #d3d3d3;
+  }
+
+  /* Font family definitions */
+  .font-ultra {
+    font-family: 'Ultra', serif;
+  }
+
+  .font-gill-sans {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+
+  /* Default font hierarchy */
+  body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Ultra', serif;
   }
 }
 

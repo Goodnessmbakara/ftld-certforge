@@ -95,11 +95,11 @@ export default function VerifyPage() {
               <div className="w-16 h-16 bg-[#00FF7F] rounded-full flex items-center justify-center mr-4 shadow-lg">
                 <Shield className="w-8 h-8 text-black" />
               </div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
+              <h1 className="text-5xl font-ultra font-bold bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
                 Certificate Verification
               </h1>
             </div>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto font-gill-sans">
               Verify the authenticity of FTLD certificates with our secure
               blockchain-powered verification system
             </p>
