@@ -16,6 +16,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { useAlchemyWallet } from "../../hooks/useAlchemyWallet";
 
 interface CertificateData {
   studentName: string;
@@ -53,6 +54,11 @@ export default function AdminDashboard() {
     errors: string[];
   } | null>(null);
   const [programs, setPrograms] = useState<string[]>([]);
+  const {
+    walletAddress,
+    loading: walletLoading,
+    error: walletError,
+  } = useAlchemyWallet();
 
   useEffect(() => {
     // Fetch programs and stats from API
@@ -270,8 +276,26 @@ export default function AdminDashboard() {
     <div className="min-h-screen">
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
+      <div className="container mx-auto px-2 sm:px-4 py-8 sm:py-16">
+        <div className="max-w-5xl mx-auto">
+          {/* User Smart Wallet Info */}
+          <div className="mb-8">
+            <h2 className="text-xl font-ultra font-bold mb-2">
+              Your Smart Wallet
+            </h2>
+            {walletLoading && (
+              <p className="text-gray-400">Loading wallet...</p>
+            )}
+            {walletError && <p className="text-red-500">{walletError}</p>}
+            {walletAddress && (
+              <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 flex flex-col gap-2">
+                <span className="text-gray-400 text-sm">Wallet Address:</span>
+                <code className="break-all text-green-400 font-mono">
+                  {walletAddress}
+                </code>
+              </div>
+            )}
+          </div>
           {/* Hero Section */}
           <div className="text-center mb-12">
             <div className="flex justify-center items-center mb-6">
@@ -289,7 +313,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8 mb-8 sm:mb-12">
             <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 text-center hover:border-[#00FF7F] transition-all duration-300">
               <div className="w-12 h-12 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="w-6 h-6 text-black" />
@@ -323,7 +347,7 @@ export default function AdminDashboard() {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Certificate Generation Form */}
-            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-8 shadow-2xl">
+            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-4 sm:p-10 shadow-2xl">
               <div className="flex items-center mb-6">
                 <div className="w-10 h-10 bg-[#00FF7F] rounded-lg flex items-center justify-center mr-3">
                   <FileText className="w-5 h-5 text-black" />
@@ -348,7 +372,7 @@ export default function AdminDashboard() {
                     value={formData.studentName}
                     onChange={handleInputChange}
                     placeholder="Enter student's full name"
-                    className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-all duration-300"
+                    className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-all duration-300 text-base sm:text-lg"
                     required
                   />
                 </div>
@@ -365,7 +389,7 @@ export default function AdminDashboard() {
                     name="program"
                     value={formData.program}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-[#00FF7F] focus:outline-none transition-all duration-300"
+                    className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-[#00FF7F] focus:outline-none transition-all duration-300 text-base sm:text-lg"
                     required
                   >
                     <option value="">Select a program</option>
@@ -390,7 +414,7 @@ export default function AdminDashboard() {
                     name="completionDate"
                     value={formData.completionDate}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-[#00FF7F] focus:outline-none transition-all duration-300"
+                    className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-[#00FF7F] focus:outline-none transition-all duration-300 text-base sm:text-lg"
                     required
                   />
                 </div>
@@ -398,7 +422,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={generateCertificate}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00FF7F]/80 text-black font-bold py-4 px-6 rounded-lg hover:from-[#00FF7F]/90 hover:to-[#00FF7F]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                  className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00FF7F]/80 text-black font-bold py-4 px-6 rounded-lg hover:from-[#00FF7F]/90 hover:to-[#00FF7F]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-base sm:text-lg"
                 >
                   {isGenerating ? (
                     <div className="flex items-center justify-center">
@@ -418,7 +442,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Bulk Upload Section */}
-            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-8 shadow-2xl">
+            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-4 sm:p-10 shadow-2xl overflow-x-auto">
               <div className="flex items-center mb-6">
                 <div className="w-10 h-10 bg-[#0014A8] rounded-lg flex items-center justify-center mr-3">
                   <Upload className="w-5 h-5 text-white" />
@@ -443,7 +467,7 @@ export default function AdminDashboard() {
                   />
                   <label
                     htmlFor="file-upload"
-                    className="bg-[#0014A8] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#0014A8]/80 transition-all duration-300 cursor-pointer inline-block"
+                    className="bg-[#0014A8] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#0014A8]/80 transition-all duration-300 cursor-pointer inline-block text-base sm:text-lg"
                   >
                     Choose File
                   </label>
@@ -457,7 +481,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={handleBulkGenerate}
                   disabled={isBulkUploading || !bulkUploadFile}
-                  className="w-full bg-gradient-to-r from-[#0014A8] to-[#0014A8]/80 text-white font-bold py-4 px-6 rounded-lg hover:from-[#0014A8]/90 hover:to-[#0014A8]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                  className="w-full bg-gradient-to-r from-[#0014A8] to-[#0014A8]/80 text-white font-bold py-4 px-6 rounded-lg hover:from-[#0014A8]/90 hover:to-[#0014A8]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-base sm:text-lg"
                 >
                   {isBulkUploading ? (
                     <div className="flex items-center justify-center">
@@ -474,7 +498,7 @@ export default function AdminDashboard() {
                 )}
 
                 {bulkUploadResult && (
-                  <div className="mt-6 p-4 rounded-lg border-2 border-[#00FF7F] bg-[#00FF7F]/10">
+                  <div className="mt-6 p-4 rounded-lg border-2 border-[#00FF7F] bg-[#00FF7F]/10 overflow-x-auto">
                     <div className="flex items-center mb-2">
                       <CheckCircle className="w-5 h-5 text-[#00FF7F] mr-2" />
                       <span className="font-bold text-[#00FF7F]">

@@ -203,8 +203,8 @@ export default function StudentsPage() {
     <div className="min-h-screen">
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
+      <div className="container mx-auto px-2 sm:px-4 py-8 sm:py-16">
+        <div className="max-w-6xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-12">
             <div className="flex justify-center items-center mb-6">
@@ -269,14 +269,14 @@ export default function StudentsPage() {
                   placeholder="Search by name or verification code..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-all duration-300"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-all duration-300 text-base sm:text-lg"
                 />
               </div>
               <div>
                 <select
                   value={selectedProgram}
                   onChange={(e) => setSelectedProgram(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-[#00FF7F] focus:outline-none transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-[#00FF7F] focus:outline-none transition-all duration-300 text-base sm:text-lg"
                 >
                   <option value="">All Programs</option>
                   {programs.map((program) => (
@@ -290,7 +290,7 @@ export default function StudentsPage() {
                 <button
                   onClick={handleBulkDownload}
                   disabled={selectedCertificateIds.size === 0}
-                  className="flex-1 bg-gradient-to-r from-[#00FF7F] to-[#00FF7F]/80 text-black font-bold py-3 px-4 rounded-lg hover:from-[#00FF7F]/90 hover:to-[#00FF7F]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                  className="flex-1 bg-gradient-to-r from-[#00FF7F] to-[#00FF7F]/80 text-black font-bold py-3 px-4 rounded-lg hover:from-[#00FF7F]/90 hover:to-[#00FF7F]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-base sm:text-lg"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Download Selected
@@ -298,7 +298,7 @@ export default function StudentsPage() {
                 <button
                   onClick={handleBulkShare}
                   disabled={selectedCertificateIds.size === 0}
-                  className="flex-1 bg-gradient-to-r from-[#0014A8] to-[#0014A8]/80 text-white font-bold py-3 px-4 rounded-lg hover:from-[#0014A8]/90 hover:to-[#0014A8]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                  className="flex-1 bg-gradient-to-r from-[#0014A8] to-[#0014A8]/80 text-white font-bold py-3 px-4 rounded-lg hover:from-[#0014A8]/90 hover:to-[#0014A8]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-base sm:text-lg"
                 >
                   <Share2 className="w-4 h-4 mr-2" />
                   Share Selected
@@ -447,22 +447,15 @@ export default function StudentsPage() {
 
       {/* Certificate Preview Modal */}
       {showPreview && selectedCertificate && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
-          <div className="bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-700 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-white">
-                Certificate Preview
-              </h2>
-              <button
-                onClick={() => setShowPreview(false)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="p-6">
-              <CertificatePreview certificate={selectedCertificate} />
-            </div>
+        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-2 sm:p-8 overflow-auto">
+          <div className="bg-gray-900 rounded-xl p-2 sm:p-8 max-w-full max-h-full overflow-auto relative">
+            <button
+              className="absolute top-2 right-2 text-gray-400 hover:text-red-400 text-2xl"
+              onClick={() => setShowPreview(false)}
+            >
+              &times;
+            </button>
+            <CertificatePreview certificate={selectedCertificate} />
           </div>
         </div>
       )}

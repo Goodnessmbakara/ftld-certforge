@@ -87,68 +87,80 @@ export default function VerifyPage() {
     <div className="min-h-screen">
       <Header />
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-2 sm:px-4 py-8 sm:py-16">
         <div className="max-w-4xl mx-auto">
           {/* Hero Section */}
-          <div className="text-center mb-16">
-            <div className="flex justify-center items-center mb-6">
-              <div className="w-16 h-16 bg-[#00FF7F] rounded-full flex items-center justify-center mr-4 shadow-lg">
-                <Shield className="w-8 h-8 text-black" />
+          <div className="text-center mb-10 sm:mb-16">
+            <div className="flex flex-col sm:flex-row justify-center items-center mb-4 sm:mb-6 gap-2 sm:gap-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#00FF7F] rounded-full flex items-center justify-center shadow-lg mx-auto">
+                <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-black" />
               </div>
-              <h1 className="text-5xl font-ultra font-bold bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-5xl font-ultra font-bold bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent mt-2 sm:mt-0">
                 Certificate Verification
               </h1>
             </div>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto font-gill-sans">
+            <p className="text-base sm:text-xl text-gray-400 max-w-2xl mx-auto font-gill-sans">
               Verify the authenticity of FTLD certificates with our secure
               blockchain-powered verification system
             </p>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 text-center hover:border-[#00FF7F] transition-all duration-300">
-              <div className="w-12 h-12 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-6 h-6 text-black" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
+            <div className="card text-center">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">127+</h3>
-              <p className="text-gray-400">Verified Certificates</p>
+              <h3 className="text-lg sm:text-2xl font-bold text-white mb-1 sm:mb-2">
+                127+
+              </h3>
+              <p className="text-gray-400 text-xs sm:text-base">
+                Verified Certificates
+              </p>
             </div>
-            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 text-center hover:border-[#0014A8] transition-all duration-300">
-              <div className="w-12 h-12 bg-[#0014A8] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-6 h-6 text-white" />
+            <div className="card text-center">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-[#0014A8] rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">100%</h3>
-              <p className="text-gray-400">Security Rate</p>
+              <h3 className="text-lg sm:text-2xl font-bold text-white mb-1 sm:mb-2">
+                100%
+              </h3>
+              <p className="text-gray-400 text-xs sm:text-base">
+                Security Rate
+              </p>
             </div>
-            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 text-center hover:border-[#00FF7F] transition-all duration-300">
-              <div className="w-12 h-12 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-6 h-6 text-black" />
+            <div className="card text-center">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">24/7</h3>
-              <p className="text-gray-400">Verification Available</p>
+              <h3 className="text-lg sm:text-2xl font-bold text-white mb-1 sm:mb-2">
+                24/7
+              </h3>
+              <p className="text-gray-400 text-xs sm:text-base">
+                Verification Available
+              </p>
             </div>
           </div>
 
           {/* Verification Form */}
-          <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-8 shadow-2xl mb-12">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Search className="w-8 h-8 text-black" />
+          <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-4 sm:p-8 shadow-2xl mb-8 sm:mb-12">
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="w-10 h-10 sm:w-16 sm:h-16 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-4 shadow-lg">
+                <Search className="w-6 h-6 sm:w-8 sm:h-8 text-black" />
               </div>
-              <h2 className="text-3xl font-bold text-white mb-2">
+              <h2 className="text-lg sm:text-3xl font-bold text-white mb-1 sm:mb-2">
                 Verify Certificate
               </h2>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-xs sm:text-base">
                 Enter the verification code to confirm authenticity
               </p>
             </div>
 
-            <div className="space-y-6 max-w-md mx-auto">
+            <div className="space-y-4 sm:space-y-6 max-w-md mx-auto">
               <div>
                 <label
                   htmlFor="verificationCode"
-                  className="block text-sm font-medium mb-2 text-[#00FF7F]"
+                  className="block text-xs sm:text-sm font-medium mb-2 text-[#00FF7F]"
                 >
                   Verification Code
                 </label>
@@ -160,16 +172,16 @@ export default function VerifyPage() {
                     onChange={(e) => setVerificationCode(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Enter verification code (e.g., FTLD-XXXX-XXXX)"
-                    className="w-full px-4 py-4 pl-12 pr-4 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-all duration-300 text-center font-mono text-lg"
+                    className="w-full px-4 py-3 sm:py-4 pl-10 sm:pl-12 pr-4 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-all duration-300 text-center font-mono text-base sm:text-lg"
                   />
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                 </div>
               </div>
 
               <button
                 onClick={verifyCertificate}
                 disabled={isVerifying}
-                className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00FF7F]/80 text-black font-bold py-4 px-6 rounded-lg hover:from-[#00FF7F]/90 hover:to-[#00FF7F]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00FF7F]/80 text-black font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:from-[#00FF7F]/90 hover:to-[#00FF7F]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-base sm:text-lg"
               >
                 {isVerifying ? (
                   <div className="flex items-center justify-center">
@@ -187,16 +199,18 @@ export default function VerifyPage() {
 
             {/* Error Display */}
             {error && (
-              <div className="mt-6 max-w-md mx-auto">
-                <div className="p-4 bg-red-500/20 rounded-lg border border-red-500/30">
-                  <p className="text-red-400 font-medium">{error}</p>
+              <div className="mt-4 sm:mt-6 max-w-md mx-auto">
+                <div className="p-3 sm:p-4 bg-red-500/20 rounded-lg border border-red-500/30">
+                  <p className="text-red-400 font-medium text-xs sm:text-base">
+                    {error}
+                  </p>
                 </div>
               </div>
             )}
 
             {/* Verification Result */}
             {verificationResult && (
-              <div className="mt-8 max-w-md mx-auto">
+              <div className="mt-6 sm:mt-8 max-w-md mx-auto">
                 <div
                   className={`p-6 rounded-xl border-2 shadow-lg ${
                     verificationResult.valid
