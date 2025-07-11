@@ -20,7 +20,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(false);
+    // Set loading to false when user state is determined
+    if (user !== undefined) {
+      setLoading(false);
+    }
   }, [user]);
 
   const signOut = async () => {

@@ -5,6 +5,7 @@ import { X, Mail, Wallet, Sparkles, Shield, ArrowRight } from "lucide-react";
 import { createAlchemySmartAccountClient } from "@alchemy/aa-alchemy";
 import { sepolia } from "viem/chains";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useAccountKit } from "@account-kit/react";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -12,7 +13,11 @@ interface AuthModalProps {
   onSuccess: (user: any) => void;
 }
 
-export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
+export default function AuthModal({
+  isOpen,
+  onClose,
+  onSuccess,
+}: AuthModalProps) {
   const [mode, setMode] = useState<"signup" | "login">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,6 +25,19 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
   const [error, setError] = useState("");
   const [walletLoading, setWalletLoading] = useState(false);
   const supabase = useSupabaseClient();
+
+  const { openModal, isLoading: accountKitLoading } = useAccountKit({
+    onSuccess: async (account) => {
+      // account.address is the smart wallet address
+      // You can store this in Supabase or your user context as needed
+      // For demo, just call onSuccess with the account object
+      onSuccess(account);
+      onClose();
+    },
+    onError: (error) => {
+      setError(error.message || "Authentication failed");
+    },
+  });
 
   // Reset form when modal opens/closes
   useEffect(() => {
@@ -82,7 +100,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
           .from("users")
           .update({ wallet_address: address })
           .eq("id", userId);
-        
+
         if (updateError) {
           console.error("Failed to save wallet address:", updateError);
         }
@@ -93,32 +111,6 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
     }
   };
 
-  const handleWalletAuth = async () => {
-    setWalletLoading(true);
-    setError("");
-
-    try {
-      // Create a unique email for wallet-based authentication
-      const walletEmail = `wallet-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@ftld.demo`;
-      const walletPassword = "wallet-auth-" + Math.random().toString(36).substr(2, 12);
-
-      const { data, error } = await supabase.auth.signUp({
-        email: walletEmail,
-        password: walletPassword,
-      });
-
-      if (error) throw error;
-      if (data.user) {
-        await createSmartWallet(data.user.id);
-        onSuccess(data.user);
-      }
-    } catch (err: any) {
-      setError("Wallet connection failed. Please try email authentication.");
-    } finally {
-      setWalletLoading(false);
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -126,9 +118,12 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
       <div className="bg-[#101010] border border-[#00FF7F] rounded-2xl p-6 w-full max-w-md relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300FF7F' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300FF7F' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          />
         </div>
 
         {/* Close Button */}
@@ -148,30 +143,38 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
             {mode === "signup" ? "Join FTLD" : "Welcome Back"}
           </h2>
           <p className="text-gray-400">
-            {mode === "signup" 
-              ? "Create your account and get your Smart Wallet" 
-              : "Sign in to access your certificates"
-            }
+            {mode === "signup"
+              ? "Create your account and get your Smart Wallet"
+              : "Sign in to access your certificates"}
           </p>
         </div>
 
-        {/* Wallet Auth Button */}
+        {/* Alchemy Smart Wallet Auth Button */}
         <button
-          onClick={handleWalletAuth}
-          disabled={walletLoading}
-          className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00CC66] text-black font-bold py-3 px-4 rounded-xl mb-6 flex items-center justify-center space-x-2 hover:from-[#00CC66] hover:to-[#00FF7F] transition-all duration-300 disabled:opacity-50"
+          onClick={openModal}
+          disabled={accountKitLoading}
+          className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00CC66] text-black font-bold py-3 px-4 rounded-xl mb-6 flex items-center justify-center space-x-2 hover:from-[#00CC66] hover:to-[#00FF7F] transition-all duration-300 disabled:opacity-50 border-2 border-[#00FF7F]"
         >
-          {walletLoading ? (
+          {accountKitLoading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black" />
           ) : (
             <>
               <Wallet size={20} />
-              <span>Connect Smart Wallet</span>
-              <Sparkles size={16} />
+              <span>Sign in with Smart Wallet</span>
+              <img
+                src="https://static.alchemyapi.io/images/logos/alchemy-logo-icon.svg"
+                alt="Alchemy"
+                className="w-5 h-5 ml-2"
+              />
             </>
           )}
         </button>
-
+        <div className="text-center mb-4">
+          <span className="text-xs text-gray-400">
+            Empowered by{" "}
+            <span className="text-[#00FF7F] font-bold">Alchemy</span>
+          </span>
+        </div>
         {/* Divider */}
         <div className="flex items-center mb-6">
           <div className="flex-1 border-t border-gray-700" />
@@ -186,7 +189,10 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Mail
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="email"
                 value={email}
@@ -237,7 +243,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
         {/* Mode Toggle */}
         <div className="text-center mt-6">
           <p className="text-gray-400">
-            {mode === "signup" ? "Already have an account?" : "Don't have an account?"}
+            {mode === "signup"
+              ? "Already have an account?"
+              : "Don't have an account?"}
             <button
               onClick={() => setMode(mode === "signup" ? "login" : "signup")}
               className="text-[#00FF7F] hover:text-[#00CC66] ml-1 font-medium transition-colors"
@@ -250,10 +258,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
         {/* FTLD Branding */}
         <div className="text-center mt-6 pt-6 border-t border-gray-800">
           <p className="text-xs text-gray-500">
-            Powered by <span className="text-[#00FF7F] font-bold">FTLD</span> Smart Wallets
+            Powered by <span className="text-[#00FF7F] font-bold">FTLD</span>{" "}
+            Smart Wallets
           </p>
         </div>
       </div>
     </div>
   );
-} 
+}
