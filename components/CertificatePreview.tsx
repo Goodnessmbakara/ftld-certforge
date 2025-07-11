@@ -102,10 +102,10 @@ export default function CertificatePreview({
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6">
       {/* Redesigned Certificate Design */}
       <div
-        className="relative bg-[#101010] text-white p-2 xs:p-4 md:p-10 rounded-2xl shadow-2xl overflow-hidden border-4 border-[#00FF7F] print:bg-white print:text-black print:border-black print-mode:bg-white print-mode:text-black print-mode:border-black"
+        className="relative bg-[#101010] text-white p-4 md:p-10 rounded-2xl shadow-2xl overflow-hidden border-4 border-[#00FF7F] print:bg-white print:text-black print:border-black print-mode:bg-white print-mode:text-black print-mode:border-black"
         id="certificate"
         style={{
           backgroundImage: "url('/pattern-bg.png')",
@@ -115,36 +115,36 @@ export default function CertificatePreview({
         }}
       >
         {/* Glowing FTLD Logo */}
-        <div className="flex justify-center items-center mb-6 sm:mb-8 relative">
-          <div className="absolute w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-[#00FF7F] blur-3xl opacity-20 animate-pulse"></div>
+        <div className="flex justify-center items-center mb-8 relative">
+          <div className="absolute w-32 h-32 rounded-full bg-[#00FF7F] blur-3xl opacity-20 animate-pulse"></div>
           <Image
             src="/ftld-logo.svg"
             alt="FTLD Logo"
             width={100}
             height={100}
-            className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain z-10 drop-shadow-[0_0_20px_#00FF7F80]"
+            className="w-24 h-24 md:w-32 md:h-32 object-contain z-10 drop-shadow-[0_0_20px_#00FF7F80]"
           />
         </div>
         {/* Certificate Title */}
-        <h1 className="text-2xl xs:text-3xl md:text-5xl font-ultra font-extrabold text-center mb-1 sm:mb-2 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-ultra font-extrabold text-center mb-2 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent tracking-tight">
           Certificate of Completion
         </h1>
-        <div className="w-20 h-1 bg-[#00FF7F] mx-auto rounded-full mb-4 sm:mb-8"></div>
+        <div className="w-32 h-1.5 bg-[#00FF7F] mx-auto rounded-full mb-8"></div>
         {/* Student Name & Program */}
-        <div className="text-center mb-6 sm:mb-8">
-          <p className="text-base xs:text-lg md:text-xl text-gray-300 mb-1 sm:mb-2 font-gill-sans">
+        <div className="text-center mb-8">
+          <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">
             This certifies that
           </p>
-          <h2 className="text-xl xs:text-2xl md:text-5xl font-ultra font-bold text-white mb-1 sm:mb-2 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-ultra font-bold text-white mb-2 leading-tight">
             {certificate.studentName}
           </h2>
-          <p className="text-base xs:text-lg md:text-xl text-gray-300 mb-1 sm:mb-2 font-gill-sans">
+          <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">
             has successfully completed the
           </p>
-          <h3 className="text-lg xs:text-xl md:text-3xl font-ultra font-bold text-[#00FF7F] mb-1 sm:mb-2 leading-tight">
+          <h3 className="text-2xl md:text-3xl font-ultra font-bold text-[#00FF7F] mb-2 leading-tight">
             {certificate.program}
           </h3>
-          <p className="text-base xs:text-lg md:text-xl text-gray-300 font-gill-sans">
+          <p className="text-lg md:text-xl text-gray-300 font-gill-sans">
             program on{" "}
             {new Date(certificate.completionDate).toLocaleDateString("en-US", {
               year: "numeric",
@@ -154,15 +154,13 @@ export default function CertificatePreview({
           </p>
         </div>
         {/* Certificate Seal & Lisk Badge */}
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 sm:gap-8 mb-4 sm:mb-8">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-8 mb-8">
           {/* Certificate Seal */}
           <div className="flex flex-col items-center">
-            <div className="w-12 h-12 sm:w-20 sm:h-20 rounded-full border-4 border-[#0014A8] bg-[#0014A8]/20 flex items-center justify-center shadow-lg">
-              <span className="text-xl sm:text-3xl font-extrabold text-[#00FF7F]">
-                ✔
-              </span>
+            <div className="w-20 h-20 rounded-full border-4 border-[#0014A8] bg-[#0014A8]/20 flex items-center justify-center shadow-lg">
+              <span className="text-3xl font-extrabold text-[#00FF7F]">✔</span>
             </div>
-            <span className="mt-1 sm:mt-2 text-xs text-[#00FF7F] font-bold tracking-widest">
+            <span className="mt-2 text-xs text-[#00FF7F] font-bold tracking-widest">
               FTLD SEAL
             </span>
           </div>
@@ -173,18 +171,18 @@ export default function CertificatePreview({
             onMouseLeave={() => setShowLiskBadge(false)}
           >
             <div
-              className={`px-4 sm:px-8 py-2 sm:py-3 rounded-full border-2 border-[#0014A8] transition-all duration-300 flex items-center space-x-2 ${
+              className={`px-8 py-3 rounded-full border-2 border-[#0014A8] transition-all duration-300 flex items-center space-x-2 ${
                 showLiskBadge
                   ? "bg-[#0014A8] text-white scale-105 shadow-lg"
                   : "bg-[#101010] text-[#0014A8]"
               }`}
             >
               <Info
-                className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                className={`w-5 h-5 ${
                   showLiskBadge ? "text-white" : "text-[#0014A8]"
                 }`}
               />
-              <span className="font-bold text-xs sm:text-lg font-gill-sans">
+              <span className="font-bold text-lg font-gill-sans">
                 Powered by Lisk Partnership
               </span>
             </div>
@@ -196,8 +194,8 @@ export default function CertificatePreview({
           </div>
         </div>
         {/* QR Code & Verification Code */}
-        <div className="flex flex-col md:flex-row justify-between items-center w-full px-2 sm:px-4 md:px-8 mt-4 sm:mt-8 gap-4">
-          <div className="text-left mb-4 md:mb-0">
+        <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 md:px-8 mt-8">
+          <div className="text-left mb-6 md:mb-0">
             <p className="text-base font-bold text-[#00FF7F] font-gill-sans mb-2">
               Verification Code:
             </p>
