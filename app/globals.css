@@ -40,6 +40,38 @@
   .progress-fill {
     @apply h-full bg-gradient-to-r from-green-400 to-blue-800 transition-all duration-1000 ease-out;
   }
+
+  /* New animated elements for landing page */
+  .glow-pulse {
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .slide-up {
+    animation: slideUp 0.8s ease-out;
+  }
+
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(45deg, #00ff7f, #0014a8, #00ff7f);
+    background-size: 400% 400%;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background: #000;
+    border-radius: inherit;
+    z-index: -1;
+  }
 }
 
 @keyframes fadeIn {
@@ -53,19 +85,77 @@
   }
 }
 
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px #00ff7f40, 0 0 40px #00ff7f20, 0 0 60px #00ff7f10;
+  }
+  50% {
+    box-shadow: 0 0 30px #00ff7f60, 0 0 60px #00ff7f40, 0 0 90px #00ff7f20;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Enhanced scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1f2937;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #00ff7f;
-  border-radius: 4px;
+  background: linear-gradient(to bottom, #00ff7f, #0014a8);
+  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00ff7f;
+  background: linear-gradient(to bottom, #0014a8, #00ff7f);
+}
+
+/* Custom selection colors */
+::selection {
+  background: #00ff7f40;
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: #00ff7f40;
+  color: #ffffff;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
 }

@@ -53,148 +53,115 @@ export default function CertificatePreview({
 
   return (
     <div className="space-y-6">
-      {/* Certificate Design */}
+      {/* Redesigned Certificate Design */}
       <div
-        className="bg-white text-black p-4 md:p-8 rounded-lg shadow-2xl relative overflow-hidden"
+        className="relative bg-[#101010] text-white p-4 md:p-10 rounded-2xl shadow-2xl overflow-hidden border-4 border-[#00FF7F] print:bg-white print:text-black print:border-black"
         id="certificate"
+        style={{
+          backgroundImage: "url('/pattern-bg.png')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "300px 300px",
+          backgroundBlendMode: "multiply",
+        }}
       >
-        <div className="relative z-10 border-4 border-green-400 p-4 md:p-8 rounded-lg flex flex-col items-center text-center">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-center mb-4">
-              {/* FTLD Logo */}
-              <div className="w-20 h-20 flex items-center justify-center mr-4 shadow-lg">
-                <Image
-                  src="/ftld-logo.svg"
-                  alt="FTLD Logo"
-                  width={80}
-                  height={80}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div>
-                <h1 className="text-5xl font-extrabold text-blue-800 tracking-tight">
-                  FTLD
-                </h1>
-                <p className="text-lg text-gray-600 font-gill-sans">
-                  For The Love of DeFi
-                </p>
-              </div>
+        {/* Glowing FTLD Logo */}
+        <div className="flex justify-center items-center mb-8 relative">
+          <div className="absolute w-32 h-32 rounded-full bg-[#00FF7F] blur-3xl opacity-20 animate-pulse"></div>
+          <Image
+            src="/ftld-logo.svg"
+            alt="FTLD Logo"
+            width={100}
+            height={100}
+            className="w-24 h-24 md:w-32 md:h-32 object-contain z-10 drop-shadow-[0_0_20px_#00FF7F80]"
+          />
+        </div>
+        {/* Certificate Title */}
+        <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-2 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent tracking-tight">
+          Certificate of Completion
+        </h1>
+        <div className="w-32 h-1.5 bg-[#00FF7F] mx-auto rounded-full mb-8"></div>
+        {/* Student Name & Program */}
+        <div className="text-center mb-8">
+          <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">This certifies that</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-2 font-gill-sans leading-tight">
+            {certificate.studentName}
+          </h2>
+          <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">has successfully completed the</p>
+          <h3 className="text-2xl md:text-3xl font-bold text-[#00FF7F] mb-2 font-gill-sans leading-tight">
+            {certificate.program}
+          </h3>
+          <p className="text-lg md:text-xl text-gray-300 font-gill-sans">
+            program on {new Date(certificate.completionDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+          </p>
+        </div>
+        {/* Certificate Seal & Lisk Badge */}
+        <div className="flex flex-col md:flex-row justify-center items-center gap-8 mb-8">
+          {/* Certificate Seal */}
+          <div className="flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full border-4 border-[#0014A8] bg-[#0014A8]/20 flex items-center justify-center shadow-lg">
+              <span className="text-3xl font-extrabold text-[#00FF7F]">✔</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-blue-800 mb-2 font-gill-sans">
-              Certificate of Completion
-            </h2>
-            <div className="w-32 h-1.5 bg-green-400 mx-auto rounded-full"></div>
+            <span className="mt-2 text-xs text-[#00FF7F] font-bold tracking-widest">FTLD SEAL</span>
           </div>
-
-          {/* Certificate Content */}
-          <div className="mb-8 max-w-2xl">
-            <p className="text-xl text-gray-700 mb-4 font-gill-sans">
-              This certifies that
-            </p>
-            <h3 className="text-4xl md:text-5xl font-bold text-blue-800 mb-4 font-gill-sans leading-tight">
-              {certificate.studentName}
-            </h3>
-            <p className="text-xl text-gray-700 mb-2 font-gill-sans">
-              has successfully completed the
-            </p>
-            <h4 className="text-3xl md:text-4xl font-bold text-green-400 mb-4 font-gill-sans leading-tight">
-              {certificate.program}
-            </h4>
-            <p className="text-xl text-gray-700 font-gill-sans">
-              program on{" "}
-              {new Date(certificate.completionDate).toLocaleDateString(
-                "en-US",
-                {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                }
-              )}
-            </p>
-          </div>
-
           {/* Lisk Partnership Badge */}
-          <div className="flex justify-center mb-8">
-            <div
-              className="relative group"
-              onMouseEnter={() => setShowLiskBadge(true)}
-              onMouseLeave={() => setShowLiskBadge(false)}
-            >
-              <div
-                className={`px-8 py-3 rounded-full border-2 border-blue-800 transition-all duration-300 cursor-pointer flex items-center space-x-2 ${
-                  showLiskBadge
-                    ? "bg-blue-800 text-white transform scale-105 shadow-lg"
-                    : "bg-white text-blue-800"
-                }`}
-              >
-                <Info
-                  className={`w-5 h-5 ${
-                    showLiskBadge ? "text-white" : "text-blue-800"
-                  }`}
-                />
-                <span className="font-bold text-lg font-gill-sans">
-                  Powered by Lisk Partnership
-                </span>
+          <div
+            className="relative group cursor-pointer"
+            onMouseEnter={() => setShowLiskBadge(true)}
+            onMouseLeave={() => setShowLiskBadge(false)}
+          >
+            <div className={`px-8 py-3 rounded-full border-2 border-[#0014A8] transition-all duration-300 flex items-center space-x-2 ${showLiskBadge ? "bg-[#0014A8] text-white scale-105 shadow-lg" : "bg-[#101010] text-[#0014A8]"}`}>
+              <Info className={`w-5 h-5 ${showLiskBadge ? "text-white" : "text-[#0014A8]"}`} />
+              <span className="font-bold text-lg font-gill-sans">Powered by Lisk Partnership</span>
+            </div>
+            {showLiskBadge && (
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-4 py-2 bg-black text-white text-sm rounded-lg shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Blockchain-verified authenticity
               </div>
-              {showLiskBadge && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-4 py-2 bg-black text-white text-sm rounded-lg shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  Blockchain-verified authenticity
-                </div>
-              )}
-            </div>
+            )}
           </div>
-
-          {/* Footer with QR Code and Verification */}
-          <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 md:px-8">
-            <div className="text-left mb-6 md:mb-0">
-              <p className="text-base font-bold text-gray-700 font-gill-sans">
-                Verification Code:
-              </p>
-              <p className="text-2xl font-mono text-blue-800 font-bold">
-                {certificate.verificationCode}
-              </p>
-            </div>
-
-            <div className="text-center">
+        </div>
+        {/* QR Code & Verification Code */}
+        <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 md:px-8 mt-8">
+          <div className="text-left mb-6 md:mb-0">
+            <p className="text-base font-bold text-[#00FF7F] font-gill-sans">Verification Code:</p>
+            <p className="text-2xl font-mono text-[#0014A8] font-bold tracking-widest bg-[#00FF7F]/10 px-4 py-2 rounded-lg inline-block">
+              {certificate.verificationCode}
+            </p>
+          </div>
+          <div className="text-center">
+            <div className="inline-block bg-white p-2 rounded-xl shadow-lg">
               <QRCodeGenerator value={verificationUrl} size={120} />
-              <p className="text-sm mt-2 text-gray-600 font-gill-sans">
-                Scan to verify authenticity
-              </p>
             </div>
+            <p className="text-sm mt-2 text-gray-400 font-gill-sans">Scan to verify authenticity</p>
           </div>
         </div>
       </div>
-
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-4 justify-center mt-6">
         <button
           onClick={downloadPDF}
-          className="flex items-center space-x-2 bg-green-400 text-black px-6 py-3 rounded-lg font-bold hover:bg-green-300 transition-all duration-300 transform hover:scale-105"
+          className="flex items-center space-x-2 bg-[#00FF7F] text-black px-6 py-3 rounded-lg font-bold hover:bg-[#00FF7F]/80 transition-all duration-300 transform hover:scale-105 shadow-lg"
         >
           <Download className="w-5 h-5" />
           <span>Download PDF</span>
         </button>
-
         <button
           onClick={shareOnTwitter}
-          className="flex items-center space-x-2 bg-[#1DA1F2] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#1DA1F2]/90 transition-all duration-300 transform hover:scale-105"
+          className="flex items-center space-x-2 bg-[#1DA1F2] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#1DA1F2]/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
         >
           <Twitter className="w-5 h-5" />
           <span>Share on X</span>
         </button>
-
         <button
           onClick={shareOnLinkedIn}
-          className="flex items-center space-x-2 bg-[#0077B5] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#0077B5]/90 transition-all duration-300 transform hover:scale-105"
+          className="flex items-center space-x-2 bg-[#0077B5] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#0077B5]/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
         >
           <Linkedin className="w-5 h-5" />
           <span>Share on LinkedIn</span>
         </button>
-
         <button
           onClick={copyVerificationCode}
-          className="flex items-center space-x-2 bg-gray-700 text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-600 transition-all duration-300 transform hover:scale-105"
+          className="flex items-center space-x-2 bg-gray-700 text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
         >
           <Copy className="w-5 h-5" />
           <span>Copy Code</span>

@@ -1,17 +1,32 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import Header from "@/components/Header"
-import CertificatePreview from "@/components/CertificatePreview"
-import ProgressBar from "@/components/ProgressBar"
-import { Upload, FileText, CheckCircle, XCircle } from "lucide-react"
+import { useState, useEffect } from "react";
+import Header from "@/components/Header";
+import CertificatePreview from "@/components/CertificatePreview";
+import ProgressBar from "@/components/ProgressBar";
+import {
+  Upload,
+  FileText,
+  CheckCircle,
+  XCircle,
+  Sparkles,
+  Award,
+  Users,
+  Zap,
+} from "lucide-react";
 
 interface CertificateData {
-  studentName: string
-  program: string
-  completionDate: string
+  studentName: string;
+  program: string;
+  completionDate: string;
+}
+
+interface Stats {
+  totalCertificates: number;
+  activePrograms: number;
+  successRate: number;
 }
 
 export default function AdminDashboard() {
@@ -19,65 +34,92 @@ export default function AdminDashboard() {
     studentName: "",
     program: "",
     completionDate: "",
-  })
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [certificate, setCertificate] = useState(null)
+  });
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [certificate, setCertificate] = useState(null);
+  const [stats, setStats] = useState<Stats>({
+    totalCertificates: 0,
+    activePrograms: 0,
+    successRate: 99.9,
+  });
 
-  const [bulkUploadFile, setBulkUploadFile] = useState<File | null>(null)
-  const [isBulkUploading, setIsBulkUploading] = useState(false)
-  const [bulkUploadProgress, setBulkUploadProgress] = useState(0)
+  const [bulkUploadFile, setBulkUploadFile] = useState<File | null>(null);
+  const [isBulkUploading, setIsBulkUploading] = useState(false);
+  const [bulkUploadProgress, setBulkUploadProgress] = useState(0);
   const [bulkUploadResult, setBulkUploadResult] = useState<{
-    success: number
-    failed: number
-    errors: string[]
-  } | null>(null)
-  const [programs, setPrograms] = useState<string[]>([])
+    success: number;
+    failed: number;
+    errors: string[];
+  } | null>(null);
+  const [programs, setPrograms] = useState<string[]>([]);
 
   useEffect(() => {
-    // Fetch programs from API
-    const fetchPrograms = async () => {
+    // Fetch programs and stats from API
+    const fetchData = async () => {
       try {
-        const response = await fetch("/api/programs")
-        const data = await response.json()
-        if (data.success) {
-          setPrograms(data.programs.map((p: { name: string }) => p.name))
+        // Fetch programs
+        const programsResponse = await fetch("/api/programs");
+        const programsData = await programsResponse.json();
+        if (programsData.success) {
+          setPrograms(
+            programsData.programs.map((p: { name: string }) => p.name)
+          );
         } else {
-          console.error("Failed to fetch programs:", data.error)
+          console.error("Failed to fetch programs:", programsData.error);
+        }
+
+        // Fetch stats (certificates count)
+        const studentsResponse = await fetch("/api/certificates");
+        const studentsData = await studentsResponse.json();
+        if (studentsData.success) {
+          setStats({
+            totalCertificates: studentsData.certificates.length,
+            activePrograms: programsData.success
+              ? programsData.programs.length
+              : 0,
+            successRate: 99.9,
+          });
         }
       } catch (error) {
-        console.error("Error fetching programs:", error)
+        console.error("Error fetching data:", error);
       }
-    }
-    fetchPrograms()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   const generateCertificate = async () => {
-    if (!formData.studentName || !formData.program || !formData.completionDate) {
-      alert("Please fill in all fields")
-      return
+    if (
+      !formData.studentName ||
+      !formData.program ||
+      !formData.completionDate
+    ) {
+      alert("Please fill in all fields");
+      return;
     }
 
-    setIsGenerating(true)
-    setProgress(0)
-    setCertificate(null)
+    setIsGenerating(true);
+    setProgress(0);
+    setCertificate(null);
 
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          clearInterval(progressInterval)
-          return 100
+          clearInterval(progressInterval);
+          return 100;
         }
-        return prev + 10
-      })
-    }, 100)
+        return prev + 10;
+      });
+    }, 100);
 
     try {
       const response = await fetch("/api/certificates", {
@@ -86,107 +128,215 @@ export default function AdminDashboard() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-      })
-      const result = await response.json()
+      });
+      const result = await response.json();
 
       if (result.success) {
-        setCertificate(result.certificate)
+        setCertificate(result.certificate);
+        // Update stats
+        setStats((prev) => ({
+          ...prev,
+          totalCertificates: prev.totalCertificates + 1,
+        }));
       } else {
-        alert(`Failed to generate certificate: ${result.error}`)
+        alert(`Failed to generate certificate: ${result.error}`);
       }
     } catch (error) {
-      console.error("Error generating certificate:", error)
-      alert("An unexpected error occurred during certificate generation.")
+      console.error("Error generating certificate:", error);
+      alert("An unexpected error occurred during certificate generation.");
     } finally {
-      setIsGenerating(false)
-      setProgress(0)
+      setIsGenerating(false);
+      setProgress(0);
     }
-  }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setBulkUploadFile(e.target.files[0])
-      setBulkUploadResult(null) // Clear previous results
+      setBulkUploadFile(e.target.files[0]);
+      setBulkUploadResult(null); // Clear previous results
     }
-  }
+  };
 
   const handleBulkGenerate = async () => {
     if (!bulkUploadFile) {
-      alert("Please select an Excel/CSV file to upload.")
-      return
+      alert("Please select an Excel/CSV file to upload.");
+      return;
     }
 
-    setIsBulkUploading(true)
-    setBulkUploadProgress(0)
-    setBulkUploadResult(null)
+    setIsBulkUploading(true);
+    setBulkUploadProgress(0);
+    setBulkUploadResult(null);
 
-    // Simulate file parsing and data extraction
-    // In a real app, you'd use a library like 'xlsx' here
-    // For this demo, we'll use mock data
-    const mockParsedData: CertificateData[] = [
-      { studentName: "Jane Doe", program: "Smart Contract Training (Lisk)", completionDate: "2024-03-01" },
-      { studentName: "Peter Jones", program: "Future Program 1", completionDate: "2024-03-05" },
-      { studentName: "Sarah Lee", program: "Smart Contract Training (Lisk)", completionDate: "2024-03-10" },
-      { studentName: "Invalid Entry", program: "Non-existent Program", completionDate: "2024-03-15" }, // Simulate an error
-    ]
+    try {
+      // For demo purposes, we'll use mock data
+      // In a real implementation, you would parse the actual file
+      const mockParsedData: CertificateData[] = [
+        {
+          studentName: "Jane Doe",
+          program: "Smart Contract Training (Lisk)",
+          completionDate: "2024-03-01",
+        },
+        {
+          studentName: "Peter Jones",
+          program: "Future Program 1",
+          completionDate: "2024-03-05",
+        },
+        {
+          studentName: "Sarah Lee",
+          program: "Smart Contract Training (Lisk)",
+          completionDate: "2024-03-10",
+        },
+        {
+          studentName: "Invalid Entry",
+          program: "Non-existent Program",
+          completionDate: "2024-03-15",
+        }, // Simulate an error
+      ];
 
-    const totalRecords = mockParsedData.length
-    let successfulCreations = 0
-    let failedCreations = 0
-    const errors: string[] = []
+      const totalRecords = mockParsedData.length;
+      let successfulCreations = 0;
+      let failedCreations = 0;
+      const errors: string[] = [];
 
-    for (let i = 0; i < totalRecords; i++) {
-      const record = mockParsedData[i]
-      setBulkUploadProgress(Math.floor(((i + 1) / totalRecords) * 100))
+      for (let i = 0; i < totalRecords; i++) {
+        const record = mockParsedData[i];
+        setBulkUploadProgress(Math.floor(((i + 1) / totalRecords) * 100));
 
-      try {
-        const response = await fetch("/api/certificates/bulk-create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify([record]), // Send one by one for demo, or send batch
-        })
-        const result = await response.json()
+        try {
+          const response = await fetch("/api/certificates/bulk-create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify([record]), // Send one by one for demo, or send batch
+          });
+          const result = await response.json();
 
-        if (result.success) {
-          successfulCreations += result.certificates.length
-        } else {
-          failedCreations++
-          errors.push(`Record ${i + 1} (${record.studentName}): ${result.error || "Unknown error"}`)
+          if (result.success) {
+            successfulCreations += result.results.filter(
+              (r: any) => r.success
+            ).length;
+            failedCreations += result.results.filter(
+              (r: any) => !r.success
+            ).length;
+            errors.push(...result.summary.errors);
+          } else {
+            failedCreations++;
+            errors.push(
+              `Record ${i + 1} (${record.studentName}): ${
+                result.error || "Unknown error"
+              }`
+            );
+          }
+        } catch (error: any) {
+          failedCreations++;
+          errors.push(
+            `Record ${i + 1} (${record.studentName}): ${
+              error.message || "Network error"
+            }`
+          );
         }
-      } catch (error: any) {
-        failedCreations++
-        errors.push(`Record ${i + 1} (${record.studentName}): ${error.message || "Network error"}`)
+        await new Promise((resolve) => setTimeout(resolve, 200)); // Simulate processing time
       }
-      await new Promise((resolve) => setTimeout(resolve, 200)) // Simulate processing time
-    }
 
-    setBulkUploadResult({ success: successfulCreations, failed: failedCreations, errors })
-    setIsBulkUploading(false)
-    setBulkUploadProgress(0)
-    setBulkUploadFile(null) // Clear file input
-  }
+      setBulkUploadResult({
+        success: successfulCreations,
+        failed: failedCreations,
+        errors,
+      });
+
+      // Update stats if successful
+      if (successfulCreations > 0) {
+        setStats((prev) => ({
+          ...prev,
+          totalCertificates: prev.totalCertificates + successfulCreations,
+        }));
+      }
+    } catch (error) {
+      console.error("Error in bulk upload:", error);
+      setBulkUploadResult({
+        success: 0,
+        failed: 1,
+        errors: ["Bulk upload failed"],
+      });
+    } finally {
+      setIsBulkUploading(false);
+      setBulkUploadProgress(0);
+      setBulkUploadFile(null); // Clear file input
+    }
+  };
 
   return (
     <div className="min-h-screen">
       <Header />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4">Admin Dashboard</h1>
-            <p className="text-xl text-gray-400">Generate certificates for FTLD program completions</p>
+        <div className="max-w-7xl mx-auto">
+          {/* Hero Section */}
+          <div className="text-center mb-12">
+            <div className="flex justify-center items-center mb-6">
+              <div className="w-16 h-16 bg-[#00FF7F] rounded-full flex items-center justify-center mr-4 shadow-lg">
+                <Award className="w-8 h-8 text-black" />
+              </div>
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
+                Admin Dashboard
+              </h1>
+            </div>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              Generate and manage certificates for FTLD program completions with
+              our powerful admin tools
+            </p>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 text-center hover:border-[#00FF7F] transition-all duration-300">
+              <div className="w-12 h-12 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-6 h-6 text-black" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {stats.totalCertificates}+
+              </h3>
+              <p className="text-gray-400">Certificates Generated</p>
+            </div>
+            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 text-center hover:border-[#0014A8] transition-all duration-300">
+              <div className="w-12 h-12 bg-[#0014A8] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Award className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {stats.activePrograms}
+              </h3>
+              <p className="text-gray-400">Active Programs</p>
+            </div>
+            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 text-center hover:border-[#00FF7F] transition-all duration-300">
+              <div className="w-12 h-12 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Zap className="w-6 h-6 text-black" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {stats.successRate}%
+              </h3>
+              <p className="text-gray-400">Success Rate</p>
+            </div>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Certificate Generation Form */}
-            <div className="card">
-              <h2 className="text-2xl font-bold mb-6">Single Certificate Generation</h2>
+            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-8 shadow-2xl">
+              <div className="flex items-center mb-6">
+                <div className="w-10 h-10 bg-[#00FF7F] rounded-lg flex items-center justify-center mr-3">
+                  <FileText className="w-5 h-5 text-black" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">
+                  Single Certificate Generation
+                </h2>
+              </div>
 
               <div className="space-y-6">
                 <div>
-                  <label htmlFor="studentName" className="block text-sm font-medium mb-2">
+                  <label
+                    htmlFor="studentName"
+                    className="block text-sm font-medium mb-2 text-[#00FF7F]"
+                  >
                     Student Name *
                   </label>
                   <input
@@ -196,13 +346,16 @@ export default function AdminDashboard() {
                     value={formData.studentName}
                     onChange={handleInputChange}
                     placeholder="Enter student's full name"
-                    className="input-field"
+                    className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-all duration-300"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="program" className="block text-sm font-medium mb-2">
+                  <label
+                    htmlFor="program"
+                    className="block text-sm font-medium mb-2 text-[#00FF7F]"
+                  >
                     Program *
                   </label>
                   <select
@@ -210,7 +363,7 @@ export default function AdminDashboard() {
                     name="program"
                     value={formData.program}
                     onChange={handleInputChange}
-                    className="input-field"
+                    className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-[#00FF7F] focus:outline-none transition-all duration-300"
                     required
                   >
                     <option value="">Select a program</option>
@@ -223,7 +376,10 @@ export default function AdminDashboard() {
                 </div>
 
                 <div>
-                  <label htmlFor="completionDate" className="block text-sm font-medium mb-2">
+                  <label
+                    htmlFor="completionDate"
+                    className="block text-sm font-medium mb-2 text-[#00FF7F]"
+                  >
                     Completion Date *
                   </label>
                   <input
@@ -232,140 +388,148 @@ export default function AdminDashboard() {
                     name="completionDate"
                     value={formData.completionDate}
                     onChange={handleInputChange}
-                    className="input-field"
+                    className="w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white focus:border-[#00FF7F] focus:outline-none transition-all duration-300"
                     required
                   />
                 </div>
 
-                {isGenerating && (
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-400">Generating certificate...</p>
-                    <ProgressBar progress={progress} />
-                  </div>
-                )}
-
                 <button
                   onClick={generateCertificate}
                   disabled={isGenerating}
-                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00FF7F]/80 text-black font-bold py-4 px-6 rounded-lg hover:from-[#00FF7F]/90 hover:to-[#00FF7F]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                 >
-                  {isGenerating ? "Generating..." : "Generate Certificate"}
+                  {isGenerating ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-2"></div>
+                      Generating Certificate...
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Generate Certificate
+                    </div>
+                  )}
                 </button>
+
+                {isGenerating && <ProgressBar progress={progress} />}
               </div>
             </div>
 
-            {/* Bulk Certificate Generation */}
-            <div className="card">
-              <h2 className="text-2xl font-bold mb-6">Bulk Certificate Generation</h2>
-              <p className="text-gray-400 mb-4">Upload an Excel/CSV file with student details.</p>
+            {/* Bulk Upload Section */}
+            <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl p-8 shadow-2xl">
+              <div className="flex items-center mb-6">
+                <div className="w-10 h-10 bg-[#0014A8] rounded-lg flex items-center justify-center mr-3">
+                  <Upload className="w-5 h-5 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">
+                  Bulk Certificate Generation
+                </h2>
+              </div>
 
               <div className="space-y-6">
-                <div>
-                  <label htmlFor="bulkUpload" className="block text-sm font-medium mb-2">
-                    Upload File (.csv, .xlsx)
-                  </label>
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="file"
-                      id="bulkUpload"
-                      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                      onChange={handleFileChange}
-                      className="hidden"
-                    />
-                    <label
-                      htmlFor="bulkUpload"
-                      className="flex items-center justify-center px-4 py-2 border border-gray-700 rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 transition-colors text-gray-300"
-                    >
-                      <Upload className="w-5 h-5 mr-2" />
-                      {bulkUploadFile ? bulkUploadFile.name : "Choose File"}
-                    </label>
-                    {bulkUploadFile && (
-                      <button
-                        onClick={() => setBulkUploadFile(null)}
-                        className="text-red-400 hover:text-red-500 text-sm"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Expected columns: `studentName`, `program`, `completionDate` (YYYY-MM-DD)
+                <div className="border-2 border-dashed border-gray-700 rounded-lg p-8 text-center hover:border-[#0014A8] transition-all duration-300">
+                  <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-400 mb-4">
+                    Upload Excel/CSV file with student data
                   </p>
+                  <input
+                    type="file"
+                    accept=".xlsx,.xls,.csv"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    id="file-upload"
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    className="bg-[#0014A8] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#0014A8]/80 transition-all duration-300 cursor-pointer inline-block"
+                  >
+                    Choose File
+                  </label>
+                  {bulkUploadFile && (
+                    <p className="text-[#00FF7F] mt-2">
+                      Selected: {bulkUploadFile.name}
+                    </p>
+                  )}
                 </div>
-
-                {isBulkUploading && (
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-400">Processing file...</p>
-                    <ProgressBar progress={bulkUploadProgress} />
-                  </div>
-                )}
 
                 <button
                   onClick={handleBulkGenerate}
-                  disabled={!bulkUploadFile || isBulkUploading}
-                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isBulkUploading || !bulkUploadFile}
+                  className="w-full bg-gradient-to-r from-[#0014A8] to-[#0014A8]/80 text-white font-bold py-4 px-6 rounded-lg hover:from-[#0014A8]/90 hover:to-[#0014A8]/70 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                 >
-                  {isBulkUploading ? "Processing..." : "Generate Certificates from File"}
+                  {isBulkUploading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Processing...
+                    </div>
+                  ) : (
+                    "Process Bulk Upload"
+                  )}
                 </button>
 
+                {isBulkUploading && (
+                  <ProgressBar progress={bulkUploadProgress} />
+                )}
+
                 {bulkUploadResult && (
-                  <div
-                    className={`mt-4 p-4 rounded-lg ${
-                      bulkUploadResult.failed === 0
-                        ? "bg-green-500/10 border-green-500"
-                        : "bg-red-500/10 border-red-500"
-                    } border`}
-                  >
-                    <h3 className="font-bold mb-2">Bulk Upload Summary:</h3>
-                    <p className="text-sm">
-                      <CheckCircle className="inline-block w-4 h-4 mr-1 text-green-400" />
-                      Successfully created: {bulkUploadResult.success}
+                  <div className="mt-6 p-4 rounded-lg border-2 border-[#00FF7F] bg-[#00FF7F]/10">
+                    <div className="flex items-center mb-2">
+                      <CheckCircle className="w-5 h-5 text-[#00FF7F] mr-2" />
+                      <span className="font-bold text-[#00FF7F]">
+                        Bulk Upload Complete
+                      </span>
+                    </div>
+                    <p className="text-white">
+                      Successfully created {bulkUploadResult.success}{" "}
+                      certificates
                     </p>
                     {bulkUploadResult.failed > 0 && (
-                      <>
-                        <p className="text-sm text-red-400">
-                          <XCircle className="inline-block w-4 h-4 mr-1 text-red-400" />
-                          Failed to create: {bulkUploadResult.failed}
-                        </p>
-                        {bulkUploadResult.errors.length > 0 && (
-                          <div className="mt-2 text-xs text-red-300 max-h-24 overflow-y-auto border-t border-red-600 pt-2">
-                            <p className="font-semibold">Errors:</p>
-                            <ul className="list-disc list-inside">
-                              {bulkUploadResult.errors.map((err, index) => (
-                                <li key={index}>{err}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </>
+                      <p className="text-red-400">
+                        Failed to create {bulkUploadResult.failed} certificates
+                      </p>
+                    )}
+                    {bulkUploadResult.errors.length > 0 && (
+                      <details className="mt-2">
+                        <summary className="text-sm text-gray-400 cursor-pointer">
+                          View Errors
+                        </summary>
+                        <ul className="mt-2 text-xs text-red-400 space-y-1">
+                          {bulkUploadResult.errors
+                            .slice(0, 5)
+                            .map((error, index) => (
+                              <li key={index}>• {error}</li>
+                            ))}
+                          {bulkUploadResult.errors.length > 5 && (
+                            <li>
+                              ... and {bulkUploadResult.errors.length - 5} more
+                              errors
+                            </li>
+                          )}
+                        </ul>
+                      </details>
                     )}
                   </div>
                 )}
               </div>
             </div>
-
-            {/* Certificate Preview */}
-            <div className="card lg:col-span-2">
-              <h2 className="text-2xl font-bold mb-6">Certificate Preview</h2>
-
-              {certificate ? (
-                <div className="fade-in">
-                  <CertificatePreview certificate={certificate} />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-96 border-2 border-dashed border-gray-700 rounded-lg">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <FileText className="w-8 h-8 text-gray-400" />
-                    </div>
-                    <p className="text-gray-400">Certificate preview will appear here</p>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
+
+          {/* Certificate Preview */}
+          {certificate && (
+            <div className="mt-12">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white mb-2">
+                  Generated Certificate
+                </h2>
+                <p className="text-gray-400">
+                  Preview and download the generated certificate
+                </p>
+              </div>
+              <CertificatePreview certificate={certificate} />
+            </div>
+          )}
         </div>
       </div>
     </div>
-  )
+  );
 }
