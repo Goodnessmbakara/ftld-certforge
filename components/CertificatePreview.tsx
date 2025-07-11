@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { Download, Twitter, Linkedin, Copy, Info } from "lucide-react";
 import Image from "next/image";
 import QRCodeGenerator from "./QRCodeGenerator";
-import html2pdf from "html2pdf.js";
 
 interface Certificate {
   id: string;
@@ -31,9 +30,11 @@ export default function CertificatePreview({
     );
   }, [certificate.verificationCode]);
 
-  const downloadPDF = () => {
+  const downloadPDF = async () => {
     const element = document.getElementById("certificate");
     if (!element) return;
+
+    const html2pdf = (await import("html2pdf.js")).default;
 
     const opt = {
       margin: 0.5,
