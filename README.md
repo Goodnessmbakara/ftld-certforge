@@ -23,7 +23,7 @@ A modern certificate generation and verification platform for For The Love of De
 ### Prerequisites
 
 - Node.js 18+ 
-- npm or yarn
+- pnpm or yarn
 - Supabase account
 
 ### Installation
@@ -36,7 +36,7 @@ cd ftld-certforge
 
 2. Install dependencies:
 \`\`\`bash
-npm install
+pnpm install
 \`\`\`
 
 3. Set up environment variables:
@@ -57,7 +57,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 5. Run the development server:
 \`\`\`bash
-npm run dev
+pnpm run dev
 \`\`\`
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser
@@ -107,7 +107,7 @@ ftld-certforge/
 3. Deploy automatically on push to main branch
 
 ### Manual Deployment
-1. Build the project: `npm run build`
+1. Build the project: `pnpm run build`
 2. Deploy the `.next` folder to your hosting provider
 3. Ensure environment variables are set
 
