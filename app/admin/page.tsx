@@ -407,7 +407,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <div className="flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 mr-2" />
+                      <Award className="w-5 h-5 mr-2" />
                       Generate Certificate
                     </div>
                   )}

@@ -86,7 +86,7 @@ export default function HomePage() {
               href="/admin"
               className="group bg-[#00FF7F] text-black font-bold text-xl px-10 py-5 rounded-full hover:bg-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-[#00FF7F]/50 flex items-center gap-3"
             >
-              <Sparkles className="w-6 h-6" />
+              <Award className="w-6 h-6" />
               Generate Certificate
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -340,7 +340,6 @@ export default function HomePage() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] text-white font-bold text-xl px-12 py-6 rounded-full hover:from-[#0014A8] hover:to-[#00FF7F] transition-all duration-500 transform hover:scale-105 shadow-2xl"
           >
-            <Sparkles className="w-6 h-6" />
             Start Your Journey
             <ArrowRight className="w-6 h-6" />
           </a>
