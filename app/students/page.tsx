@@ -308,142 +308,133 @@ export default function StudentsPage() {
           </div>
 
           {/* Certificates List */}
-          <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl shadow-2xl overflow-x-auto">
+          <div className="bg-gray-900 bg-opacity-50 backdrop-blur-sm border border-gray-800 rounded-xl shadow-2xl overflow-hidden">
             {isLoading ? (
-              <div className="flex items-center justify-center h-32 sm:h-64">
-                <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-[#00FF7F]"></div>
+              <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00FF7F]"></div>
               </div>
             ) : error ? (
-              <div className="text-center py-8 sm:py-12 px-4">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <XCircle className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <XCircle className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                <h3 className="text-xl font-bold text-white mb-2">
                   Error Loading Certificates
                 </h3>
-                <p className="text-gray-400 mb-4 text-sm sm:text-base">
-                  {error}
-                </p>
+                <p className="text-gray-400 mb-4">{error}</p>
                 <button
                   onClick={() => window.location.reload()}
-                  className="bg-[#00FF7F] text-black px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold hover:bg-[#00FF7F]/80 transition-all duration-300 text-sm sm:text-base"
+                  className="bg-[#00FF7F] text-black px-6 py-3 rounded-lg font-bold hover:bg-[#00FF7F]/80 transition-all duration-300"
                 >
                   Try Again
                 </button>
               </div>
             ) : (
               <>
-                {/* Responsive Table View */}
-                <div className="w-full overflow-x-auto">
-                  <table className="min-w-[700px] w-full text-sm sm:text-base">
-                    <thead>
-                      <tr className="bg-gray-800 bg-opacity-50">
-                        <th className="px-4 py-3 text-left font-bold text-[#00FF7F] whitespace-nowrap">
+                {/* Table Header */}
+                <div className="bg-gray-800 bg-opacity-50 px-6 py-4 border-b border-gray-700">
+                  <div className="grid grid-cols-12 gap-4 items-center">
+                    <div className="col-span-1">
+                      <input
+                        type="checkbox"
+                        checked={allCertificatesSelected}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        className="w-4 h-4 text-[#00FF7F] bg-gray-700 border-gray-600 rounded focus:ring-[#00FF7F] focus:ring-2"
+                      />
+                    </div>
+                    <div className="col-span-3 font-bold text-[#00FF7F]">
+                      Student Name
+                    </div>
+                    <div className="col-span-3 font-bold text-[#00FF7F]">
+                      Program
+                    </div>
+                    <div className="col-span-2 font-bold text-[#00FF7F]">
+                      Completion Date
+                    </div>
+                    <div className="col-span-2 font-bold text-[#00FF7F]">
+                      Verification Code
+                    </div>
+                    <div className="col-span-1 font-bold text-[#00FF7F] text-center">
+                      Actions
+                    </div>
+                  </div>
+                </div>
+
+                {/* Table Body */}
+                <div className="divide-y divide-gray-700">
+                  {filteredCertificates.map((certificate) => (
+                    <div
+                      key={certificate.id}
+                      className="px-6 py-4 hover:bg-gray-800 hover:bg-opacity-30 transition-all duration-300"
+                    >
+                      <div className="grid grid-cols-12 gap-4 items-center">
+                        <div className="col-span-1">
                           <input
                             type="checkbox"
-                            checked={allCertificatesSelected}
-                            onChange={(e) => handleSelectAll(e.target.checked)}
+                            checked={selectedCertificateIds.has(certificate.id)}
+                            onChange={(e) =>
+                              handleSelectCertificate(
+                                certificate.id,
+                                e.target.checked
+                              )
+                            }
                             className="w-4 h-4 text-[#00FF7F] bg-gray-700 border-gray-600 rounded focus:ring-[#00FF7F] focus:ring-2"
                           />
-                        </th>
-                        <th className="px-4 py-3 text-left font-bold text-[#00FF7F] whitespace-nowrap">
-                          Student Name
-                        </th>
-                        <th className="px-4 py-3 text-left font-bold text-[#00FF7F] whitespace-nowrap">
-                          Program
-                        </th>
-                        <th className="px-4 py-3 text-left font-bold text-[#00FF7F] whitespace-nowrap">
-                          Completion Date
-                        </th>
-                        <th className="px-4 py-3 text-left font-bold text-[#00FF7F] whitespace-nowrap">
-                          Verification Code
-                        </th>
-                        <th className="px-4 py-3 text-center font-bold text-[#00FF7F] whitespace-nowrap">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-700">
-                      {filteredCertificates.map((certificate) => (
-                        <tr
-                          key={certificate.id}
-                          className="hover:bg-gray-800 hover:bg-opacity-30 transition-all duration-300"
-                        >
-                          <td className="px-4 py-3">
-                            <input
-                              type="checkbox"
-                              checked={selectedCertificateIds.has(
-                                certificate.id
-                              )}
-                              onChange={(e) =>
-                                handleSelectCertificate(
-                                  certificate.id,
-                                  e.target.checked
-                                )
-                              }
-                              className="w-4 h-4 text-[#00FF7F] bg-gray-700 border-gray-600 rounded focus:ring-[#00FF7F] focus:ring-2"
-                            />
-                          </td>
-                          <td className="px-4 py-3 font-medium text-white whitespace-nowrap">
-                            {certificate.studentName}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            <span
-                              className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${getProgramColor(
-                                certificate.program
-                              )}`}
-                            >
-                              {certificate.program}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-gray-300 whitespace-nowrap">
-                            {formatDate(certificate.completionDate)}
-                          </td>
-                          <td className="px-4 py-3 font-mono text-sm text-[#00FF7F] whitespace-nowrap">
-                            {certificate.verificationCode}
-                          </td>
-                          <td className="px-4 py-3 text-center whitespace-nowrap">
-                            <div className="flex justify-center gap-2 sm:gap-3">
-                              <button
-                                onClick={() =>
-                                  handleViewCertificate(certificate)
-                                }
-                                className="p-2 sm:p-2.5 text-gray-400 hover:text-[#00FF7F] hover:bg-[#00FF7F]/10 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#00FF7F]"
-                                title="View Certificate"
-                              >
-                                <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handleDownloadCertificate(certificate)
-                                }
-                                className="p-2 sm:p-2.5 text-gray-400 hover:text-[#00FF7F] hover:bg-[#00FF7F]/10 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#00FF7F]"
-                                title="Download Certificate"
-                              >
-                                <Download className="w-4 h-4 sm:w-5 sm:h-5" />
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handleShareCertificate(certificate)
-                                }
-                                className="p-2 sm:p-2.5 text-gray-400 hover:text-[#0014A8] hover:bg-[#0014A8]/10 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#0014A8]"
-                                title="Share Certificate"
-                              >
-                                <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {filteredCertificates.length === 0 && !isLoading && !error && (
-                  <div className="text-center py-8 sm:py-12 px-4">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Award className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
+                        </div>
+                        <div className="col-span-3 font-medium text-white">
+                          {certificate.studentName}
+                        </div>
+                        <div className="col-span-3">
+                          <span
+                            className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${getProgramColor(
+                              certificate.program
+                            )}`}
+                          >
+                            {certificate.program}
+                          </span>
+                        </div>
+                        <div className="col-span-2 text-gray-300">
+                          {formatDate(certificate.completionDate)}
+                        </div>
+                        <div className="col-span-2 font-mono text-sm text-[#00FF7F]">
+                          {certificate.verificationCode}
+                        </div>
+                        <div className="col-span-1 flex justify-center space-x-2">
+                          <button
+                            onClick={() => handleViewCertificate(certificate)}
+                            className="p-2 text-gray-400 hover:text-[#00FF7F] hover:bg-[#00FF7F]/10 rounded-lg transition-all duration-300"
+                            title="View Certificate"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleDownloadCertificate(certificate)
+                            }
+                            className="p-2 text-gray-400 hover:text-[#00FF7F] hover:bg-[#00FF7F]/10 rounded-lg transition-all duration-300"
+                            title="Download Certificate"
+                          >
+                            <Download className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleShareCertificate(certificate)}
+                            className="p-2 text-gray-400 hover:text-[#0014A8] hover:bg-[#0014A8]/10 rounded-lg transition-all duration-300"
+                            title="Share Certificate"
+                          >
+                            <Share2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-gray-400 text-sm sm:text-base">
+                  ))}
+                </div>
+
+                {filteredCertificates.length === 0 && !isLoading && !error && (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Award className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <p className="text-gray-400">
                       No certificates found matching your criteria
                     </p>
                   </div>

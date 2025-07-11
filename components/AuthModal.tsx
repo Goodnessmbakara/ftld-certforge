@@ -21,6 +21,16 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
   const [walletLoading, setWalletLoading] = useState(false);
   const supabase = useSupabaseClient();
 
+  // Reset form when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      setEmail("");
+      setPassword("");
+      setError("");
+      setMode("signup");
+    }
+  }, [isOpen]);
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -67,13 +77,19 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
 
       const address = await smartAccountClient.account?.getAddress();
       if (address) {
-        await supabase
+        // Update user profile with wallet address
+        const { error: updateError } = await supabase
           .from("users")
           .update({ wallet_address: address })
           .eq("id", userId);
+        
+        if (updateError) {
+          console.error("Failed to save wallet address:", updateError);
+        }
       }
     } catch (err) {
       console.error("Failed to create smart wallet:", err);
+      // Don't throw error here as user can still use the app without wallet
     }
   };
 
@@ -82,11 +98,13 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
     setError("");
 
     try {
-      // For demo purposes, we'll create a guest user with wallet
-      // In production, you'd integrate with actual wallet connection
+      // Create a unique email for wallet-based authentication
+      const walletEmail = `wallet-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@ftld.demo`;
+      const walletPassword = "wallet-auth-" + Math.random().toString(36).substr(2, 12);
+
       const { data, error } = await supabase.auth.signUp({
-        email: `wallet-${Date.now()}@ftld.demo`,
-        password: "wallet-auth-" + Math.random().toString(36),
+        email: walletEmail,
+        password: walletPassword,
       });
 
       if (error) throw error;
