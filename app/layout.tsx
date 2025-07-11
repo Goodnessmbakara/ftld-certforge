@@ -2,18 +2,13 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { UserProvider } from "../contexts/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FTLD CertForge - Certificate Generation & Verification",
-  description: "Generate and verify certificates for FTLD programs",
-  generator: "v0.dev",
-  icons: {
-    icon: "/ftld-logo.svg",
-    shortcut: "/ftld-logo.svg",
-    apple: "/ftld-logo.svg",
-  },
+  title: "FTLD CertForge - For The Love Of Defi",
+  description: "Modern certificate generation and verification platform for FTLD programs",
 };
 
 export default function RootLayout({
@@ -23,8 +18,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-black text-white min-h-screen`}>
-        {children}
+      <body className={inter.className}>
+        <UserProvider>
+          {children}
+        </UserProvider>
       </body>
     </html>
   );
