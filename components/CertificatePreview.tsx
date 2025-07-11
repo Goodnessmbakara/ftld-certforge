@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Download, Twitter, Linkedin, Copy, Info } from "lucide-react";
 import Image from "next/image";
 import QRCodeGenerator from "./QRCodeGenerator";
+import html2pdf from "html2pdf.js";
 
 interface Certificate {
   id: string;
@@ -31,10 +32,39 @@ export default function CertificatePreview({
   }, [certificate.verificationCode]);
 
   const downloadPDF = () => {
-    // In a real implementation, you would use html2pdf.js or similar
-    alert(
-      "PDF download functionality would be implemented here using html2pdf.js"
-    );
+    const element = document.getElementById("certificate");
+    if (!element) return;
+
+    const opt = {
+      margin: 0.5,
+      filename: `FTLD_Certificate_${certificate.studentName.replace(
+        /\s+/g,
+        "_"
+      )}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+      },
+      jsPDF: {
+        unit: "in",
+        format: "a4",
+        orientation: "landscape",
+      },
+    };
+
+    // Temporarily show the certificate in print-friendly mode
+    element.classList.add("print-mode");
+
+    html2pdf()
+      .set(opt)
+      .from(element)
+      .save()
+      .then(() => {
+        // Remove print mode after PDF generation
+        element.classList.remove("print-mode");
+      });
   };
 
   const shareOnTwitter = () => {
@@ -54,14 +84,27 @@ export default function CertificatePreview({
 
   const copyVerificationCode = () => {
     navigator.clipboard.writeText(certificate.verificationCode);
-    alert("Verification code copied to clipboard!");
+    // Create a temporary notification
+    const notification = document.createElement("div");
+    notification.className =
+      "fixed top-4 right-4 bg-[#00FF7F] text-black px-4 py-2 rounded-lg shadow-lg z-50 transform transition-all duration-300";
+    notification.textContent = "Verification code copied!";
+    document.body.appendChild(notification);
+
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+      notification.style.transform = "translateX(100%)";
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
   };
 
   return (
     <div className="space-y-6">
       {/* Redesigned Certificate Design */}
       <div
-        className="relative bg-[#101010] text-white p-4 md:p-10 rounded-2xl shadow-2xl overflow-hidden border-4 border-[#00FF7F] print:bg-white print:text-black print:border-black"
+        className="relative bg-[#101010] text-white p-4 md:p-10 rounded-2xl shadow-2xl overflow-hidden border-4 border-[#00FF7F] print:bg-white print:text-black print:border-black print-mode:bg-white print-mode:text-black print-mode:border-black"
         id="certificate"
         style={{
           backgroundImage: "url('/pattern-bg.png')",

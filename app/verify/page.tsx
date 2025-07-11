@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import {
   CheckCircle,
@@ -20,9 +20,23 @@ export default function VerifyPage() {
   const [verificationResult, setVerificationResult] = useState(null);
   const [error, setError] = useState<string | null>(null);
 
-  const verifyCertificate = async () => {
-    if (!verificationCode.trim()) {
-      alert("Please enter a verification code");
+  // Check for verification code in URL parameters on component mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const codeFromUrl = urlParams.get("code");
+      if (codeFromUrl) {
+        setVerificationCode(codeFromUrl);
+        // Automatically verify the certificate
+        setTimeout(() => {
+          verifyCertificateWithCode(codeFromUrl);
+        }, 100);
+      }
+    }
+  }, []);
+
+  const verifyCertificateWithCode = async (code: string) => {
+    if (!code.trim()) {
       return;
     }
 
@@ -32,7 +46,7 @@ export default function VerifyPage() {
 
     try {
       const response = await fetch(
-        `/api/verify?code=${encodeURIComponent(verificationCode.trim())}`
+        `/api/verify?code=${encodeURIComponent(code.trim())}`
       );
       const result = await response.json();
 
@@ -53,6 +67,14 @@ export default function VerifyPage() {
     } finally {
       setIsVerifying(false);
     }
+  };
+
+  const verifyCertificate = async () => {
+    if (!verificationCode.trim()) {
+      alert("Please enter a verification code");
+      return;
+    }
+    await verifyCertificateWithCode(verificationCode);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

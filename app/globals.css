@@ -159,3 +159,57 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Print mode styles for certificate PDF generation */
+.print-mode {
+  background: white !important;
+  color: black !important;
+  border-color: black !important;
+}
+
+.print-mode * {
+  color: black !important;
+}
+
+.print-mode .bg-\[#101010\] {
+  background: white !important;
+}
+
+.print-mode .text-white {
+  color: black !important;
+}
+
+.print-mode .text-gray-300 {
+  color: #333 !important;
+}
+
+.print-mode .text-gray-400 {
+  color: #666 !important;
+}
+
+.print-mode .border-\[#00FF7F\] {
+  border-color: black !important;
+}
+
+.print-mode .bg-\[#00FF7F\] {
+  background: black !important;
+}
+
+.print-mode .text-\[#00FF7F\] {
+  color: black !important;
+}
+
+.print-mode .text-\[#0014A8\] {
+  color: black !important;
+}
+
+.print-mode .bg-gradient-to-r {
+  background: black !important;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.print-mode .bg-gradient-to-r::before {
+  display: none;
+}
