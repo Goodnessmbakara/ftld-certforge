@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Download, Twitter, Linkedin, Copy, Info } from "lucide-react";
 import Image from "next/image";
 import QRCodeGenerator from "./QRCodeGenerator";
@@ -22,7 +22,13 @@ export default function CertificatePreview({
 }: CertificatePreviewProps) {
   const [showLiskBadge, setShowLiskBadge] = useState(false);
 
-  const verificationUrl = `https://ftld-certforge.org/verify?code=${certificate.verificationCode}`;
+  const [verificationUrl, setVerificationUrl] = useState("");
+
+  useEffect(() => {
+    setVerificationUrl(
+      `${window.location.origin}/verify?code=${certificate.verificationCode}`
+    );
+  }, [certificate.verificationCode]);
 
   const downloadPDF = () => {
     // In a real implementation, you would use html2pdf.js or similar
@@ -82,16 +88,25 @@ export default function CertificatePreview({
         <div className="w-32 h-1.5 bg-[#00FF7F] mx-auto rounded-full mb-8"></div>
         {/* Student Name & Program */}
         <div className="text-center mb-8">
-          <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">This certifies that</p>
+          <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">
+            This certifies that
+          </p>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-2 font-gill-sans leading-tight">
             {certificate.studentName}
           </h2>
-          <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">has successfully completed the</p>
+          <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">
+            has successfully completed the
+          </p>
           <h3 className="text-2xl md:text-3xl font-bold text-[#00FF7F] mb-2 font-gill-sans leading-tight">
             {certificate.program}
           </h3>
           <p className="text-lg md:text-xl text-gray-300 font-gill-sans">
-            program on {new Date(certificate.completionDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+            program on{" "}
+            {new Date(certificate.completionDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
         </div>
         {/* Certificate Seal & Lisk Badge */}
@@ -101,7 +116,9 @@ export default function CertificatePreview({
             <div className="w-20 h-20 rounded-full border-4 border-[#0014A8] bg-[#0014A8]/20 flex items-center justify-center shadow-lg">
               <span className="text-3xl font-extrabold text-[#00FF7F]">✔</span>
             </div>
-            <span className="mt-2 text-xs text-[#00FF7F] font-bold tracking-widest">FTLD SEAL</span>
+            <span className="mt-2 text-xs text-[#00FF7F] font-bold tracking-widest">
+              FTLD SEAL
+            </span>
           </div>
           {/* Lisk Partnership Badge */}
           <div
@@ -109,9 +126,21 @@ export default function CertificatePreview({
             onMouseEnter={() => setShowLiskBadge(true)}
             onMouseLeave={() => setShowLiskBadge(false)}
           >
-            <div className={`px-8 py-3 rounded-full border-2 border-[#0014A8] transition-all duration-300 flex items-center space-x-2 ${showLiskBadge ? "bg-[#0014A8] text-white scale-105 shadow-lg" : "bg-[#101010] text-[#0014A8]"}`}>
-              <Info className={`w-5 h-5 ${showLiskBadge ? "text-white" : "text-[#0014A8]"}`} />
-              <span className="font-bold text-lg font-gill-sans">Powered by Lisk Partnership</span>
+            <div
+              className={`px-8 py-3 rounded-full border-2 border-[#0014A8] transition-all duration-300 flex items-center space-x-2 ${
+                showLiskBadge
+                  ? "bg-[#0014A8] text-white scale-105 shadow-lg"
+                  : "bg-[#101010] text-[#0014A8]"
+              }`}
+            >
+              <Info
+                className={`w-5 h-5 ${
+                  showLiskBadge ? "text-white" : "text-[#0014A8]"
+                }`}
+              />
+              <span className="font-bold text-lg font-gill-sans">
+                Powered by Lisk Partnership
+              </span>
             </div>
             {showLiskBadge && (
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-4 py-2 bg-black text-white text-sm rounded-lg shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -123,16 +152,27 @@ export default function CertificatePreview({
         {/* QR Code & Verification Code */}
         <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 md:px-8 mt-8">
           <div className="text-left mb-6 md:mb-0">
-            <p className="text-base font-bold text-[#00FF7F] font-gill-sans">Verification Code:</p>
-            <p className="text-2xl font-mono text-[#0014A8] font-bold tracking-widest bg-[#00FF7F]/10 px-4 py-2 rounded-lg inline-block">
-              {certificate.verificationCode}
+            <p className="text-base font-bold text-[#00FF7F] font-gill-sans mb-2">
+              Verification Code:
+            </p>
+            <div className="bg-white/95 backdrop-blur-sm border-2 border-[#00FF7F] rounded-xl p-4 shadow-xl">
+              <p className="text-3xl md:text-4xl font-mono text-black font-bold tracking-widest text-center">
+                {certificate.verificationCode}
+              </p>
+            </div>
+            <p className="text-xs text-gray-400 mt-2 font-gill-sans">
+              Use this code to verify certificate authenticity
             </p>
           </div>
           <div className="text-center">
-            <div className="inline-block bg-white p-2 rounded-xl shadow-lg">
-              <QRCodeGenerator value={verificationUrl} size={120} />
+            <div className="inline-block bg-white p-3 rounded-xl shadow-xl border-2 border-[#0014A8]">
+              {verificationUrl && (
+                <QRCodeGenerator value={verificationUrl} size={140} />
+              )}
             </div>
-            <p className="text-sm mt-2 text-gray-400 font-gill-sans">Scan to verify authenticity</p>
+            <p className="text-sm mt-3 text-gray-400 font-gill-sans font-semibold">
+              Scan QR code to verify
+            </p>
           </div>
         </div>
       </div>
