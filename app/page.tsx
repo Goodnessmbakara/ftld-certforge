@@ -324,14 +324,16 @@ export default function HomePage() {
             Join the FTLD community and showcase your blockchain expertise to
             the world
           </p>
-          <Link
-            href="/admin"
+          <a
+            href="https://t.me/FTLDOfficial"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-3 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] text-white font-bold text-xl px-12 py-6 rounded-full hover:from-[#0014A8] hover:to-[#00FF7F] transition-all duration-500 transform hover:scale-105 shadow-2xl"
           >
             <Sparkles className="w-6 h-6" />
             Start Your Journey
             <ArrowRight className="w-6 h-6" />
-          </Link>
+          </a>
         </div>
       </section>
     </div>
