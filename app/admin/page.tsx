@@ -186,13 +186,13 @@ export default function AdminDashboard() {
       formData.append("file", bulkUploadFile);
 
       const response = await fetch("/api/bulk-upload", {
-        method: "POST",
+          method: "POST",
         body: formData,
       });
 
       const result = await response.json();
 
-      if (result.success) {
+        if (result.success) {
         setBulkUploadProgress(100);
         setBulkUploadResult(result);
         setBulkUploadFile(null);
@@ -201,7 +201,7 @@ export default function AdminDashboard() {
           ...prev,
           totalCertificates: prev.totalCertificates + result.success,
         }));
-      } else {
+        } else {
         throw new Error(result.error || "Failed to upload certificates");
       }
     } catch (error) {
@@ -295,9 +295,9 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
-        </div>
+          </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-8">
           {/* Generate Certificate Form */}
           <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8">
             <h2 className="text-2xl font-ultra font-bold text-white mb-6 flex items-center gap-3">
@@ -306,54 +306,54 @@ export default function AdminDashboard() {
             </h2>
 
             <form onSubmit={generateCertificate} className="space-y-6">
-              <div>
+                <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Student Name
-                </label>
-                <input
-                  type="text"
-                  name="studentName"
-                  value={formData.studentName}
-                  onChange={handleInputChange}
+                  </label>
+                  <input
+                    type="text"
+                    name="studentName"
+                    value={formData.studentName}
+                    onChange={handleInputChange}
                   className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-colors"
                   placeholder="Enter student name"
-                  required
-                />
-              </div>
+                    required
+                  />
+                </div>
 
-              <div>
+                <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Program
-                </label>
-                <select
-                  name="program"
-                  value={formData.program}
-                  onChange={handleInputChange}
+                  </label>
+                  <select
+                    name="program"
+                    value={formData.program}
+                    onChange={handleInputChange}
                   className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#00FF7F] focus:outline-none transition-colors"
-                  required
-                >
-                  <option value="">Select a program</option>
-                  {programs.map((program) => (
-                    <option key={program} value={program}>
-                      {program}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                    required
+                  >
+                    <option value="">Select a program</option>
+                    {programs.map((program) => (
+                      <option key={program} value={program}>
+                        {program}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <div>
+                <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Completion Date
-                </label>
-                <input
-                  type="date"
-                  name="completionDate"
-                  value={formData.completionDate}
-                  onChange={handleInputChange}
+                  </label>
+                  <input
+                    type="date"
+                    name="completionDate"
+                    value={formData.completionDate}
+                    onChange={handleInputChange}
                   className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#00FF7F] focus:outline-none transition-colors"
-                  required
-                />
-              </div>
+                    required
+                  />
+                </div>
 
               <button
                 type="submit"
@@ -387,8 +387,8 @@ export default function AdminDashboard() {
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
-              </div>
-            )}
+                  </div>
+                )}
 
             {/* Generated Certificate */}
             {certificate && (
@@ -411,7 +411,7 @@ export default function AdminDashboard() {
                 </button>
               </div>
             )}
-          </div>
+            </div>
 
           {/* Bulk Upload */}
           <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8">
@@ -421,12 +421,12 @@ export default function AdminDashboard() {
             </h2>
 
             <form onSubmit={handleBulkUpload} className="space-y-6">
-              <div>
+                <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Upload CSV File
-                </label>
-                <input
-                  type="file"
+                  </label>
+                    <input
+                      type="file"
                   accept=".csv"
                   onChange={(e) => setBulkUploadFile(e.target.files?.[0] || null)}
                   className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#0014A8] focus:outline-none transition-colors"
@@ -436,7 +436,7 @@ export default function AdminDashboard() {
                 </p>
               </div>
 
-              <button
+                      <button
                 type="submit"
                 disabled={isBulkUploading || !bulkUploadFile}
                 className="w-full bg-gradient-to-r from-[#0014A8] to-[#000080] text-white font-bold py-4 px-6 rounded-xl hover:from-[#000080] hover:to-[#0014A8] transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
@@ -452,7 +452,7 @@ export default function AdminDashboard() {
                     Upload Certificates
                   </div>
                 )}
-              </button>
+                </button>
             </form>
 
             {/* Upload Progress */}
@@ -486,18 +486,18 @@ export default function AdminDashboard() {
                   <p><span className="text-gray-400">Successful:</span> <span className="text-[#00FF7F]">{bulkUploadResult.success}</span></p>
                   <p><span className="text-gray-400">Failed:</span> <span className="text-red-400">{bulkUploadResult.failed}</span></p>
                 </div>
-                {bulkUploadResult.errors.length > 0 && (
+                        {bulkUploadResult.errors.length > 0 && (
                   <div className="mt-3">
                     <p className="text-sm text-gray-400 mb-2">Errors:</p>
                     <ul className="text-xs text-red-400 space-y-1">
                       {bulkUploadResult.errors.map((error, index) => (
                         <li key={index}>• {error}</li>
-                      ))}
-                    </ul>
+                              ))}
+                            </ul>
                   </div>
                 )}
-              </div>
-            )}
+                </div>
+              )}
           </div>
         </div>
       </div>

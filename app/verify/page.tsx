@@ -108,7 +108,7 @@ export default function VerifyPage() {
               <p className="text-gray-400">
                 Enter the verification code to check certificate authenticity
               </p>
-            </div>
+          </div>
 
             <div className="space-y-6">
               <div>

@@ -58,11 +58,11 @@ export default function StudentsPage() {
         offset: pagination.offset.toString(),
       });
 
-      if (searchTerm) {
+    if (searchTerm) {
         params.append("search", searchTerm);
-      }
+    }
 
-      if (selectedProgram) {
+    if (selectedProgram) {
         params.append("program", selectedProgram);
       }
 
@@ -154,7 +154,7 @@ export default function StudentsPage() {
           <p className="text-xl text-gray-400 font-gill-sans">
             View and manage all issued certificates
           </p>
-        </div>
+          </div>
 
         {/* Stats */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -206,8 +206,8 @@ export default function StudentsPage() {
                 <TrendingUp className="w-6 h-6 text-[#00FF7F]" />
               </div>
             </div>
-          </div>
-        </div>
+              </div>
+            </div>
 
         {/* Search and Filters */}
         <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 mb-8">
@@ -247,9 +247,9 @@ export default function StudentsPage() {
                 <Search className="w-4 h-4" />
                 Search
               </button>
-            </div>
+                        </div>
           </form>
-        </div>
+                    </div>
 
         {/* Certificates Table */}
         <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl overflow-hidden">
@@ -315,20 +315,20 @@ export default function StudentsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
-                          <button
+                      <button
                             onClick={() => viewCertificate(cert)}
                             className="bg-[#0014A8] text-white p-2 rounded-lg hover:bg-[#000080] transition-colors"
-                            title="View Certificate"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
+                        title="View Certificate"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
                             onClick={() => downloadCertificate(cert)}
                             className="bg-[#00FF7F] text-black p-2 rounded-lg hover:bg-[#00CC66] transition-colors"
                             title="Download Certificate"
-                          >
-                            <Download className="w-4 h-4" />
-                          </button>
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
                         </div>
                       </td>
                     </tr>
@@ -341,13 +341,13 @@ export default function StudentsPage() {
           {/* Load More */}
           {pagination.hasMore && (
             <div className="p-6 text-center">
-              <button
+                      <button
                 onClick={loadMore}
                 disabled={loading}
                 className="bg-[#00FF7F] text-black font-bold px-8 py-3 rounded-xl hover:bg-[#00CC66] transition-colors disabled:opacity-50"
               >
                 {loading ? "Loading..." : "Load More"}
-              </button>
+                      </button>
             </div>
           )}
         </div>
