@@ -11,10 +11,12 @@ import { useState, useEffect } from "react";
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [supabaseClient] = useState(() => createPagesBrowserClient());
   const [isClient, setIsClient] = useState(false);
-  
+
   // Check if Alchemy environment variables are set
-  const hasAlchemyConfig = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY && process.env.NEXT_PUBLIC_ALCHEMY_POLICY_ID;
-  
+  const hasAlchemyConfig =
+    process.env.NEXT_PUBLIC_ALCHEMY_API_KEY &&
+    process.env.NEXT_PUBLIC_ALCHEMY_POLICY_ID;
+
   useEffect(() => {
     setIsClient(true);
   }, []);

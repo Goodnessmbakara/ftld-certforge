@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Mail, Wallet, Sparkles, Shield, ArrowRight } from "lucide-react";
-import { createAlchemySmartAccountClient } from "@alchemy/aa-alchemy";
-import { sepolia } from "viem/chains";
+import { X, Mail, ArrowRight, Wallet, Sparkles } from "lucide-react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useAuthModal } from "@account-kit/react";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -22,13 +21,34 @@ export default function AuthModal({
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [walletLoading, setWalletLoading] = useState(false);
   const supabase = useSupabaseClient();
 
   // Check if Alchemy environment variables are set
   const hasAlchemyConfig =
     process.env.NEXT_PUBLIC_ALCHEMY_API_KEY &&
     process.env.NEXT_PUBLIC_ALCHEMY_POLICY_ID;
+
+  // Use Alchemy Account Kit modal for social login and wallet connection
+  const { openModal, isLoading: accountKitLoading } = useAuthModal({
+    onSuccess: async (account) => {
+      // account.address is the smart wallet address
+      // Store this in Supabase user profile
+      const user = supabase.auth.user ? await supabase.auth.user() : null;
+      if (user && account?.address) {
+        await supabase
+          .from("users")
+          .upsert({
+            id: user.id,
+            wallet_address: account.address,
+          });
+      }
+      onSuccess(account);
+      onClose();
+    },
+    onError: (error) => {
+      setError(error.message || "Authentication failed");
+    },
+  });
 
   // Reset form when modal opens/closes
   useEffect(() => {
@@ -53,10 +73,6 @@ export default function AuthModal({
         });
         if (error) throw error;
         if (data.user) {
-          // Create Alchemy Smart Wallet for new user if config is available
-          if (hasAlchemyConfig) {
-            await createSmartWallet(data.user.id);
-          }
           onSuccess(data.user);
         }
       } else {
@@ -73,56 +89,6 @@ export default function AuthModal({
       setError(error.message || "Authentication failed");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const createSmartWallet = async (userId: string) => {
-    if (!hasAlchemyConfig) return;
-
-    try {
-      const smartAccountClient = await createAlchemySmartAccountClient({
-        chain: sepolia,
-        apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!,
-        gasManagerConfig: {
-          policyId: process.env.NEXT_PUBLIC_ALCHEMY_POLICY_ID!,
-        },
-      });
-
-      // Store wallet address in user profile
-      const { data: account } = await smartAccountClient.getAccount();
-      if (account?.address) {
-        await supabase.from("users").upsert({
-          id: userId,
-          wallet_address: account.address,
-        });
-      }
-    } catch (error) {
-      console.error("Error creating smart wallet:", error);
-      // Don't throw error - wallet creation is optional
-    }
-  };
-
-  const handleSmartWalletSignIn = async () => {
-    if (!hasAlchemyConfig) {
-      setError(
-        "Smart wallet sign-in is not configured. Please use email authentication."
-      );
-      return;
-    }
-
-    setWalletLoading(true);
-    setError("");
-
-    try {
-      // For now, we'll use a simple approach
-      // In a real implementation, you'd integrate with Alchemy's modal
-      setError(
-        "Smart wallet sign-in is coming soon. Please use email authentication for now."
-      );
-    } catch (error: any) {
-      setError(error.message || "Smart wallet sign-in failed");
-    } finally {
-      setWalletLoading(false);
     }
   };
 
@@ -143,15 +109,15 @@ export default function AuthModal({
           </button>
         </div>
 
-        {/* Smart Wallet Sign In */}
+        {/* Alchemy Smart Wallet Social Login */}
         {hasAlchemyConfig && (
           <div className="mb-6">
             <button
-              onClick={handleSmartWalletSignIn}
-              disabled={walletLoading}
+              onClick={openModal}
+              disabled={accountKitLoading}
               className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00CC66] text-black font-bold py-4 px-6 rounded-xl hover:from-[#00CC66] hover:to-[#00FF7F] transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg mb-4 flex items-center justify-center gap-3"
             >
-              {walletLoading ? (
+              {accountKitLoading ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
                   Connecting Wallet...
@@ -159,7 +125,7 @@ export default function AuthModal({
               ) : (
                 <>
                   <Wallet className="w-5 h-5" />
-                  Sign In with Smart Wallet
+                  Sign In with Smart Wallet / Social
                   <Sparkles className="w-4 h-4" />
                 </>
               )}
@@ -175,9 +141,7 @@ export default function AuthModal({
             <div className="w-full border-t border-gray-700"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-gray-900 text-gray-400">
-              or continue with email
-            </span>
+            <span className="px-2 bg-gray-900 text-gray-400">or continue with email</span>
           </div>
         </div>
 
@@ -239,9 +203,7 @@ export default function AuthModal({
 
         <div className="mt-6 text-center">
           <p className="text-gray-400">
-            {mode === "signup"
-              ? "Already have an account?"
-              : "Don't have an account?"}{" "}
+            {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
             <button
               onClick={() => setMode(mode === "signup" ? "login" : "signup")}
               className="text-[#00FF7F] hover:text-[#00CC66] transition-colors font-medium"
@@ -250,15 +212,6 @@ export default function AuthModal({
             </button>
           </p>
         </div>
-
-        {!hasAlchemyConfig && (
-          <div className="mt-4 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
-            <p className="text-yellow-400 text-sm">
-              Smart wallet sign-in is not configured. Please set up Alchemy
-              environment variables for full functionality.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
