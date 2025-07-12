@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X, Mail, ArrowRight, Wallet, Sparkles } from "lucide-react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useAuthModal } from "@account-kit/react";
+import { isAlchemyConfigured } from "../lib/alchemyConfig";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -23,11 +24,6 @@ export default function AuthModal({
   const [error, setError] = useState("");
   const supabase = useSupabaseClient();
 
-  // Check if Alchemy environment variables are set
-  const hasAlchemyConfig =
-    process.env.NEXT_PUBLIC_ALCHEMY_API_KEY &&
-    process.env.NEXT_PUBLIC_ALCHEMY_POLICY_ID;
-
   // Use Alchemy Account Kit modal for social login and wallet connection
   const { openModal, isLoading: accountKitLoading } = useAuthModal({
     onSuccess: async (account) => {
@@ -35,12 +31,10 @@ export default function AuthModal({
       // Store this in Supabase user profile
       const user = supabase.auth.user ? await supabase.auth.user() : null;
       if (user && account?.address) {
-        await supabase
-          .from("users")
-          .upsert({
-            id: user.id,
-            wallet_address: account.address,
-          });
+        await supabase.from("users").upsert({
+          id: user.id,
+          wallet_address: account.address,
+        });
       }
       onSuccess(account);
       onClose();
@@ -110,7 +104,7 @@ export default function AuthModal({
         </div>
 
         {/* Alchemy Smart Wallet Social Login */}
-        {hasAlchemyConfig && (
+        {isAlchemyConfigured && (
           <div className="mb-6">
             <button
               onClick={openModal}
@@ -136,12 +130,25 @@ export default function AuthModal({
           </div>
         )}
 
+        {/* Show configuration warning if Alchemy is not configured */}
+        {!isAlchemyConfigured && (
+          <div className="mb-6 p-4 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
+            <p className="text-yellow-400 text-sm">
+              ⚠️ Smart wallet login is not configured. Please set up your
+              Alchemy environment variables to enable social login and smart
+              wallet features.
+            </p>
+          </div>
+        )}
+
         <div className="relative mb-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-700"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-gray-900 text-gray-400">or continue with email</span>
+            <span className="px-2 bg-gray-900 text-gray-400">
+              or continue with email
+            </span>
           </div>
         </div>
 
@@ -203,7 +210,9 @@ export default function AuthModal({
 
         <div className="mt-6 text-center">
           <p className="text-gray-400">
-            {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
+            {mode === "signup"
+              ? "Already have an account?"
+              : "Don't have an account?"}{" "}
             <button
               onClick={() => setMode(mode === "signup" ? "login" : "signup")}
               className="text-[#00FF7F] hover:text-[#00CC66] transition-colors font-medium"
