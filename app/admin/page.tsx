@@ -134,7 +134,9 @@ export default function AdminDashboard() {
     }, 200);
 
     try {
-      const jwt = supabaseUser?.access_token || (supabaseUser?.session?.access_token ?? "");
+      const jwt =
+        supabaseUser?.access_token ||
+        (supabaseUser?.session?.access_token ?? "");
       const response = await fetch("/api/certificates", {
         method: "POST",
         headers: {
@@ -258,14 +260,40 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center">
         <Header />
-        <div className="text-center mt-12">
-          <h2 className="text-3xl font-bold text-white mb-4">
+        <div className="flex flex-col items-center justify-center mt-16 p-8 bg-gray-900 border border-gray-800 rounded-2xl shadow-xl max-w-md w-full">
+          <div className="mb-4">
+            <svg width="48" height="48" fill="none" viewBox="0 0 24 24">
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                fill="#00FF7F"
+                fillOpacity="0.15"
+              />
+              <path
+                d="M12 8v4m0 4h.01"
+                stroke="#00FF7F"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-2">
             Admin Access Required
           </h2>
-          <p className="text-gray-400">
-            You must be an admin to generate certificates. If you believe this
-            is an error, please contact support.
+          <p className="text-gray-300 mb-4 text-center max-w-xs">
+            Only FTLD CertForge admins can generate certificates.
+            <br />
+            If you believe you should have access, please contact your program
+            administrator or support.
           </p>
+          <a
+            href="/"
+            className="inline-block mt-2 px-6 py-2 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] text-white font-bold rounded-xl shadow hover:from-[#0014A8] hover:to-[#00FF7F] transition-all"
+          >
+            Return Home
+          </a>
         </div>
       </div>
     );
