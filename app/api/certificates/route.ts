@@ -54,9 +54,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { success: false, error: "Supabase client not initialized due to missing environment variables." },
       { status: 500 },
-    )
+    );
   }
   try {
+    // Get user from request (assume JWT in Authorization header)
+    const authHeader = request.headers.get("authorization");
+    const jwt = authHeader?.split(" ")[1];
+    if (!jwt) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+    // Get user email from JWT
+    const { data: userData, error: userError } = await supabase.auth.getUser(jwt);
+    if (userError || !userData?.user?.email) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+    // Check role in users table
+    const { data: profile, error: profileError } = await supabase
+      .from("users")
+      .select("role")
+      .eq("email", userData.user.email)
+      .single();
+    if (profileError || !profile || profile.role !== "admin") {
+      return NextResponse.json({ success: false, error: "Admin access required" }, { status: 403 });
+    }
     const { studentName, program, completionDate } = await request.json()
 
     // Generate verification code

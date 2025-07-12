@@ -1,10 +1,13 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { useUser } from "@supabase/auth-helpers-react";
+import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
 
 interface UserContextType {
   user: any;
+  displayName?: string;
+  phone?: string;
+  role?: string;
   loading: boolean;
   signOut: () => Promise<void>;
 }
@@ -13,11 +16,40 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const user = useUser();
+  const supabase = useSupabaseClient();
   const [loading, setLoading] = useState(true);
+  const [displayName, setDisplayName] = useState<string | undefined>(undefined);
+  const [phone, setPhone] = useState<string | undefined>(undefined);
+  const [role, setRole] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    setLoading(false);
-  }, [user]);
+    const fetchProfile = async () => {
+      if (user && user.email) {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("users")
+          .select("display_name, phone, role")
+          .eq("email", user.email)
+          .single();
+        if (!error && data) {
+          setDisplayName(data.display_name);
+          setPhone(data.phone);
+          setRole(data.role);
+        } else {
+          setDisplayName(undefined);
+          setPhone(undefined);
+          setRole(undefined);
+        }
+        setLoading(false);
+      } else {
+        setDisplayName(undefined);
+        setPhone(undefined);
+        setRole(undefined);
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, [user, supabase]);
 
   const signOut = async () => {
     // This will be handled by the AuthProvider
@@ -28,7 +60,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <UserContext.Provider value={{ user, loading, signOut }}>
+    <UserContext.Provider
+      value={{ user, displayName, phone, role, loading, signOut }}
+    >
       {children}
     </UserContext.Provider>
   );
@@ -41,4 +75,3 @@ export function useUserContext() {
   }
   return context;
 }
- 

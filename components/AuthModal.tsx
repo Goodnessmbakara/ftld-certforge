@@ -21,6 +21,8 @@ export default function AuthModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [signupSuccess, setSignupSuccess] = useState(false);
+  const [displayName, setDisplayName] = useState("");
+  const [phone, setPhone] = useState("");
   const supabase = useSupabaseClient();
 
   // Reset form and success message when modal opens/closes or mode switches
@@ -28,6 +30,8 @@ export default function AuthModal({
     if (isOpen) {
       setEmail("");
       setPassword("");
+      setDisplayName("");
+      setPhone("");
       setError("");
       setMode("signup");
       setSignupSuccess(false);
@@ -52,8 +56,15 @@ export default function AuthModal({
         });
         if (error) throw error;
         if (data.user) {
+          // Insert into custom users table
+          await supabase.from("users").upsert({
+            email,
+            display_name: displayName,
+            phone,
+            role: "user",
+          });
           setSignupSuccess(true); // Show success message
-          onSuccess(data.user);
+          onSuccess({ ...data.user, display_name: displayName, phone });
         }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -112,6 +123,37 @@ export default function AuthModal({
 
         {/* Email Authentication */}
         <form onSubmit={handleEmailAuth} className="space-y-4">
+          {mode === "signup" && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Display Name
+                </label>
+                <input
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-colors"
+                  placeholder="Enter your display name"
+                  required
+                  disabled={signupSuccess}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Phone
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-colors"
+                  placeholder="Enter your phone number (optional)"
+                  disabled={signupSuccess}
+                />
+              </div>
+            </>
+          )}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Email

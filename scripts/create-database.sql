@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
+    phone VARCHAR(32),
     role VARCHAR(50) NOT NULL DEFAULT 'user',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -48,6 +50,6 @@ INSERT INTO programs (name, description, is_active) VALUES
 ON CONFLICT (name) DO NOTHING;
 
 -- Insert initial admin user
-INSERT INTO users (email, password_hash, role)
-VALUES ('admin@example.com', '$2b$10$PLACEHOLDERHASH', 'admin')
+INSERT INTO users (email, password_hash, display_name, phone, role)
+VALUES ('admin@example.com', '$2b$10$PLACEHOLDERHASH', 'Admin User', '+1234567890', 'admin')
 ON CONFLICT (email) DO NOTHING;

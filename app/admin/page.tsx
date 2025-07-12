@@ -16,9 +16,11 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
+import { useUserContext } from "../../contexts/UserContext";
+import { useUser } from "@supabase/auth-helpers-react";
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 interface Stats {
   totalCertificates: number;
@@ -35,6 +37,8 @@ interface Certificate {
 }
 
 export default function AdminDashboard() {
+  const { user, role, loading } = useUserContext();
+  const supabaseUser = useUser();
   const [formData, setFormData] = useState({
     studentName: "",
     program: "",
@@ -93,7 +97,9 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -103,7 +109,11 @@ export default function AdminDashboard() {
 
   const generateCertificate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.studentName || !formData.program || !formData.completionDate) {
+    if (
+      !formData.studentName ||
+      !formData.program ||
+      !formData.completionDate
+    ) {
       alert("Please fill in all fields");
       return;
     }
@@ -124,10 +134,12 @@ export default function AdminDashboard() {
     }, 200);
 
     try {
+      const jwt = supabaseUser?.access_token || (supabaseUser?.session?.access_token ?? "");
       const response = await fetch("/api/certificates", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
         },
         body: JSON.stringify(formData),
       });
@@ -186,13 +198,13 @@ export default function AdminDashboard() {
       formData.append("file", bulkUploadFile);
 
       const response = await fetch("/api/bulk-upload", {
-          method: "POST",
+        method: "POST",
         body: formData,
       });
 
       const result = await response.json();
 
-        if (result.success) {
+      if (result.success) {
         setBulkUploadProgress(100);
         setBulkUploadResult(result);
         setBulkUploadFile(null);
@@ -201,7 +213,7 @@ export default function AdminDashboard() {
           ...prev,
           totalCertificates: prev.totalCertificates + result.success,
         }));
-        } else {
+      } else {
         throw new Error(result.error || "Failed to upload certificates");
       }
     } catch (error) {
@@ -239,6 +251,26 @@ export default function AdminDashboard() {
     URL.revokeObjectURL(url);
   };
 
+  if (loading) {
+    return <div className="text-center text-white py-12">Loading...</div>;
+  }
+  if (!user || role !== "admin") {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center">
+        <Header />
+        <div className="text-center mt-12">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Admin Access Required
+          </h2>
+          <p className="text-gray-400">
+            You must be an admin to generate certificates. If you believe this
+            is an error, please contact support.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black">
       <Header />
@@ -263,8 +295,12 @@ export default function AdminDashboard() {
           <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 font-gill-sans">Total Certificates</p>
-                <p className="text-3xl font-bold text-white">{stats.totalCertificates}</p>
+                <p className="text-gray-400 font-gill-sans">
+                  Total Certificates
+                </p>
+                <p className="text-3xl font-bold text-white">
+                  {stats.totalCertificates}
+                </p>
               </div>
               <div className="w-12 h-12 bg-[#00FF7F]/20 rounded-full flex items-center justify-center">
                 <Award className="w-6 h-6 text-[#00FF7F]" />
@@ -276,7 +312,9 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 font-gill-sans">Active Programs</p>
-                <p className="text-3xl font-bold text-white">{stats.activePrograms}</p>
+                <p className="text-3xl font-bold text-white">
+                  {stats.activePrograms}
+                </p>
               </div>
               <div className="w-12 h-12 bg-[#0014A8]/20 rounded-full flex items-center justify-center">
                 <FileText className="w-6 h-6 text-[#0014A8]" />
@@ -288,16 +326,18 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 font-gill-sans">Success Rate</p>
-                <p className="text-3xl font-bold text-white">{stats.successRate}%</p>
+                <p className="text-3xl font-bold text-white">
+                  {stats.successRate}%
+                </p>
               </div>
               <div className="w-12 h-12 bg-[#00FF7F]/20 rounded-full flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-[#00FF7F]" />
               </div>
             </div>
           </div>
-          </div>
+        </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-8">
           {/* Generate Certificate Form */}
           <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8">
             <h2 className="text-2xl font-ultra font-bold text-white mb-6 flex items-center gap-3">
@@ -306,54 +346,54 @@ export default function AdminDashboard() {
             </h2>
 
             <form onSubmit={generateCertificate} className="space-y-6">
-                <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Student Name
-                  </label>
-                  <input
-                    type="text"
-                    name="studentName"
-                    value={formData.studentName}
-                    onChange={handleInputChange}
+                </label>
+                <input
+                  type="text"
+                  name="studentName"
+                  value={formData.studentName}
+                  onChange={handleInputChange}
                   className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-colors"
                   placeholder="Enter student name"
-                    required
-                  />
-                </div>
+                  required
+                />
+              </div>
 
-                <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Program
-                  </label>
-                  <select
-                    name="program"
-                    value={formData.program}
-                    onChange={handleInputChange}
+                </label>
+                <select
+                  name="program"
+                  value={formData.program}
+                  onChange={handleInputChange}
                   className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#00FF7F] focus:outline-none transition-colors"
-                    required
-                  >
-                    <option value="">Select a program</option>
-                    {programs.map((program) => (
-                      <option key={program} value={program}>
-                        {program}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  required
+                >
+                  <option value="">Select a program</option>
+                  {programs.map((program) => (
+                    <option key={program} value={program}>
+                      {program}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Completion Date
-                  </label>
-                  <input
-                    type="date"
-                    name="completionDate"
-                    value={formData.completionDate}
-                    onChange={handleInputChange}
+                </label>
+                <input
+                  type="date"
+                  name="completionDate"
+                  value={formData.completionDate}
+                  onChange={handleInputChange}
                   className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#00FF7F] focus:outline-none transition-colors"
-                    required
-                  />
-                </div>
+                  required
+                />
+              </div>
 
               <button
                 type="submit"
@@ -387,20 +427,31 @@ export default function AdminDashboard() {
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
-                  </div>
-                )}
+              </div>
+            )}
 
             {/* Generated Certificate */}
             {certificate && (
               <div className="mt-6 p-4 bg-[#00FF7F]/10 border border-[#00FF7F]/30 rounded-xl">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-bold text-white">Certificate Generated!</h3>
+                  <h3 className="text-lg font-bold text-white">
+                    Certificate Generated!
+                  </h3>
                   <CheckCircle className="w-6 h-6 text-[#00FF7F]" />
                 </div>
                 <div className="space-y-2 text-sm">
-                  <p><span className="text-gray-400">Student:</span> {certificate.studentName}</p>
-                  <p><span className="text-gray-400">Program:</span> {certificate.program}</p>
-                  <p><span className="text-gray-400">Verification Code:</span> {certificate.verificationCode}</p>
+                  <p>
+                    <span className="text-gray-400">Student:</span>{" "}
+                    {certificate.studentName}
+                  </p>
+                  <p>
+                    <span className="text-gray-400">Program:</span>{" "}
+                    {certificate.program}
+                  </p>
+                  <p>
+                    <span className="text-gray-400">Verification Code:</span>{" "}
+                    {certificate.verificationCode}
+                  </p>
                 </div>
                 <button
                   onClick={() => downloadCertificate(certificate)}
@@ -411,7 +462,7 @@ export default function AdminDashboard() {
                 </button>
               </div>
             )}
-            </div>
+          </div>
 
           {/* Bulk Upload */}
           <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8">
@@ -421,14 +472,16 @@ export default function AdminDashboard() {
             </h2>
 
             <form onSubmit={handleBulkUpload} className="space-y-6">
-                <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Upload CSV File
-                  </label>
-                    <input
-                      type="file"
+                </label>
+                <input
+                  type="file"
                   accept=".csv"
-                  onChange={(e) => setBulkUploadFile(e.target.files?.[0] || null)}
+                  onChange={(e) =>
+                    setBulkUploadFile(e.target.files?.[0] || null)
+                  }
                   className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#0014A8] focus:outline-none transition-colors"
                 />
                 <p className="text-xs text-gray-500 mt-2">
@@ -436,7 +489,7 @@ export default function AdminDashboard() {
                 </p>
               </div>
 
-                      <button
+              <button
                 type="submit"
                 disabled={isBulkUploading || !bulkUploadFile}
                 className="w-full bg-gradient-to-r from-[#0014A8] to-[#000080] text-white font-bold py-4 px-6 rounded-xl hover:from-[#000080] hover:to-[#0014A8] transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
@@ -452,7 +505,7 @@ export default function AdminDashboard() {
                     Upload Certificates
                   </div>
                 )}
-                </button>
+              </button>
             </form>
 
             {/* Upload Progress */}
@@ -475,7 +528,9 @@ export default function AdminDashboard() {
             {bulkUploadResult && (
               <div className="mt-6 p-4 bg-gray-800/50 border border-gray-700 rounded-xl">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-bold text-white">Upload Complete</h3>
+                  <h3 className="text-lg font-bold text-white">
+                    Upload Complete
+                  </h3>
                   {bulkUploadResult.failed === 0 ? (
                     <CheckCircle className="w-6 h-6 text-[#00FF7F]" />
                   ) : (
@@ -483,21 +538,31 @@ export default function AdminDashboard() {
                   )}
                 </div>
                 <div className="space-y-2 text-sm">
-                  <p><span className="text-gray-400">Successful:</span> <span className="text-[#00FF7F]">{bulkUploadResult.success}</span></p>
-                  <p><span className="text-gray-400">Failed:</span> <span className="text-red-400">{bulkUploadResult.failed}</span></p>
+                  <p>
+                    <span className="text-gray-400">Successful:</span>{" "}
+                    <span className="text-[#00FF7F]">
+                      {bulkUploadResult.success}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="text-gray-400">Failed:</span>{" "}
+                    <span className="text-red-400">
+                      {bulkUploadResult.failed}
+                    </span>
+                  </p>
                 </div>
-                        {bulkUploadResult.errors.length > 0 && (
+                {bulkUploadResult.errors.length > 0 && (
                   <div className="mt-3">
                     <p className="text-sm text-gray-400 mb-2">Errors:</p>
                     <ul className="text-xs text-red-400 space-y-1">
                       {bulkUploadResult.errors.map((error, index) => (
                         <li key={index}>• {error}</li>
-                              ))}
-                            </ul>
+                      ))}
+                    </ul>
                   </div>
                 )}
-                </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
       </div>

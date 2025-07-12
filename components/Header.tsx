@@ -4,7 +4,7 @@ import { useUserContext } from "../contexts/UserContext";
 import { useState } from "react";
 
 export default function Header() {
-  const { user, signOut } = useUserContext();
+  const { user, displayName, signOut } = useUserContext();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -71,17 +71,23 @@ export default function Header() {
                 >
                   <div className="w-8 h-8 bg-[#00FF7F] rounded-full flex items-center justify-center">
                     <span className="text-black font-bold text-sm">
-                      {user.email?.charAt(0).toUpperCase() || "U"}
+                      {(
+                        displayName ||
+                        user.email?.charAt(0) ||
+                        "U"
+                      ).toUpperCase()}
                     </span>
                   </div>
                   <span className="text-white text-sm font-medium">
-                    {user.email?.split("@")[0] || "User"}
+                    {displayName || user.email?.split("@")[0] || "User"}
                   </span>
                 </button>
                 {menuOpen && (
                   <div className="absolute right-0 top-full mt-2 w-72 bg-[#101010] border border-gray-800 rounded-xl shadow-xl z-50">
                     <div className="p-4 border-b border-gray-800">
-                      <p className="text-white font-medium">{user.email}</p>
+                      <p className="text-white font-medium">
+                        {displayName || user.email}
+                      </p>
                       <div className="mt-2 flex items-center space-x-2">
                         <span className="text-xs text-gray-400">
                           Signed in with Supabase
