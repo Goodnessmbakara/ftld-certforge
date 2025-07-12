@@ -7,18 +7,13 @@ import { alchemy, sepolia } from "@account-kit/infra";
 import { QueryClient } from "@tanstack/react-query";
 
 const API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+if (!API_KEY) {
+  throw new Error("NEXT_PUBLIC_ALCHEMY_API_KEY is not set");
+}
+
 const SPONSORSHIP_POLICY_ID = process.env.NEXT_PUBLIC_ALCHEMY_POLICY_ID;
-
-// Check if Alchemy is properly configured
-export const isAlchemyConfigured = !!(API_KEY && SPONSORSHIP_POLICY_ID);
-
-if (!isAlchemyConfigured) {
-  console.warn(
-    "⚠️ Alchemy Smart Wallets not configured. Please set the following environment variables:",
-    "\n- NEXT_PUBLIC_ALCHEMY_API_KEY",
-    "\n- NEXT_PUBLIC_ALCHEMY_POLICY_ID",
-    "\n\nGet your keys from: https://dashboard.alchemy.com/services/smart-wallets/configuration"
-  );
+if (!SPONSORSHIP_POLICY_ID) {
+  throw new Error("NEXT_PUBLIC_ALCHEMY_POLICY_ID is not set");
 }
 
 const uiConfig: AlchemyAccountsUIConfig = {
@@ -36,19 +31,16 @@ const uiConfig: AlchemyAccountsUIConfig = {
   },
 };
 
-// Only create config if environment variables are set
-export const alchemyConfig = isAlchemyConfigured
-  ? createConfig(
-      {
-        transport: alchemy({ apiKey: API_KEY! }),
-        chain: sepolia,
-        ssr: true,
-        storage: cookieStorage,
-        enablePopupOauth: true,
-        policyId: SPONSORSHIP_POLICY_ID!,
-      },
-      uiConfig
-    )
-  : null;
+export const alchemyConfig = createConfig(
+  {
+    transport: alchemy({ apiKey: API_KEY }),
+    chain: sepolia,
+    ssr: true,
+    storage: cookieStorage,
+    enablePopupOauth: true,
+    policyId: SPONSORSHIP_POLICY_ID,
+  },
+  uiConfig
+);
 
 export const queryClient = new QueryClient(); 

@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@account-kit/core':
+        specifier: 4.35.1
+        version: 4.35.1(73647f90fa1c3aff3a88607f8c6e20a3)
+      '@account-kit/infra':
+        specifier: 4.35.1
+        version: 4.35.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@account-kit/react':
-        specifier: ^4.49.0
-        version: 4.49.0(257f7bd6da3e065257db453b48b46d02)
+        specifier: ^4.35.1
+        version: 4.35.1(257f7bd6da3e065257db453b48b46d02)
       '@alchemy/aa-accounts':
         specifier: ^3.19.0
         version: 3.19.0(typescript@5.8.3)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
@@ -29,6 +35,9 @@ importers:
       '@supabase/supabase-js':
         specifier: latest
         version: 2.50.5(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      '@tanstack/react-query':
+        specifier: ^5.83.0
+        version: 5.83.0(react@18.3.1)
       '@types/qrcode':
         specifier: ^1.5.5
         version: 1.5.5
@@ -104,11 +113,16 @@ packages:
     peerDependencies:
       viem: ^2.29.2
 
-  '@account-kit/core@4.49.0':
-    resolution: {integrity: sha512-et4LLuAxD/dYyWM6A5dJygt4SUiZF3auoiQ/59SJnBDyMn7dM2gzG05sgxYKZpM3i1wQHWqenV4sN/8P6k4IvQ==}
+  '@account-kit/core@4.35.1':
+    resolution: {integrity: sha512-zm+j4pRe9/Spmqgo1sHAgjP5ydzgjkYhPi674ApHdcwpSKTs0TTNV3toZjpZUNhExuxoDA+ACcCEu/e9OWb/IA==}
     peerDependencies:
       viem: ^2.29.2
       wagmi: ^2.12.7
+
+  '@account-kit/infra@4.35.1':
+    resolution: {integrity: sha512-1vgfaAWZjsU6P/t5Vb/g/KJn19bhZ5cfGXGIHuDKK4IsJbRnQjAERY8TFJNjP1lWQ+YzSXqGGuvxG3DcDSas7w==}
+    peerDependencies:
+      viem: ^2.29.2
 
   '@account-kit/infra@4.49.0':
     resolution: {integrity: sha512-hg38Jxxjxw4a84iagcVCGb9IXomjrmUxyawQt5ZRXfCiXiHu0YslW/6NwtdfBWOauOOtMr9J9zR9JH4BexopVw==}
@@ -128,12 +142,12 @@ packages:
       react-native-mmkv: ^3.1.0
       react-native-passkey: ^3.1.0
 
-  '@account-kit/react@4.49.0':
-    resolution: {integrity: sha512-QLmZu7V5EMk+RmA/BuO0roYKma/J8/O3oIhnGhTzzkrADEXeOfMb3gdqKzzhKX5cMtGEyIybyiyZIMoSvvyGMQ==}
+  '@account-kit/react@4.35.1':
+    resolution: {integrity: sha512-wAnDRUfi2Ccjq985bstV+5UBgjUjO1iXXfpPQiNbIopfY8DtHrEnqmf80IBSUPQ3s9KdrnZSW1BzilDdu1Zw7A==}
     peerDependencies:
       '@tanstack/react-query': ^5.28.9
-      react: '>=18.2.0'
-      react-dom: '>=18.2.0'
+      react: ^18.2.0
+      react-dom: ^18.2.0
       tailwindcss: ^3.4.3
       viem: ^2.29.2
       wagmi: ^2.12.7
@@ -6176,9 +6190,9 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@account-kit/core@4.49.0(73647f90fa1c3aff3a88607f8c6e20a3)':
+  '@account-kit/core@4.35.1(73647f90fa1c3aff3a88607f8c6e20a3)':
     dependencies:
-      '@account-kit/infra': 4.49.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      '@account-kit/infra': 4.35.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@account-kit/logging': 4.49.0
       '@account-kit/react-native-signer': 4.49.0(654581652001e4b1675fe8cf074014ed)
       '@account-kit/signer': 4.49.0(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
@@ -6208,6 +6222,23 @@ snapshots:
       - supports-color
       - typescript
       - use-sync-external-store
+      - utf-8-validate
+
+  '@account-kit/infra@4.35.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
+    dependencies:
+      '@aa-sdk/core': 4.49.0(typescript@5.8.3)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      '@account-kit/logging': 4.49.0
+      eventemitter3: 5.0.1
+      viem: 2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      zod: 3.25.76
+    optionalDependencies:
+      alchemy-sdk: 3.6.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - encoding
+      - supports-color
+      - typescript
       - utf-8-validate
 
   '@account-kit/infra@4.49.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
@@ -6260,10 +6291,10 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@account-kit/react@4.49.0(257f7bd6da3e065257db453b48b46d02)':
+  '@account-kit/react@4.35.1(257f7bd6da3e065257db453b48b46d02)':
     dependencies:
-      '@account-kit/core': 4.49.0(73647f90fa1c3aff3a88607f8c6e20a3)
-      '@account-kit/infra': 4.49.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      '@account-kit/core': 4.35.1(73647f90fa1c3aff3a88607f8c6e20a3)
+      '@account-kit/infra': 4.35.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@account-kit/logging': 4.49.0
       '@account-kit/signer': 4.49.0(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.31.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@solana/web3.js': 1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)

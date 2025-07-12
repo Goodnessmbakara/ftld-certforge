@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { X, Mail, ArrowRight, Wallet, Sparkles } from "lucide-react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useAuthModal } from "@account-kit/react";
-import { isAlchemyConfigured } from "../lib/alchemyConfig";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -25,7 +24,7 @@ export default function AuthModal({
   const supabase = useSupabaseClient();
 
   // Use Alchemy Account Kit modal for social login and wallet connection
-  const { openModal, isLoading: accountKitLoading } = useAuthModal({
+  const { openAuthModal, isLoading: accountKitLoading } = useAuthModal({
     onSuccess: async (account) => {
       // account.address is the smart wallet address
       // Store this in Supabase user profile
@@ -104,42 +103,29 @@ export default function AuthModal({
         </div>
 
         {/* Alchemy Smart Wallet Social Login */}
-        {isAlchemyConfigured && (
-          <div className="mb-6">
-            <button
-              onClick={openModal}
-              disabled={accountKitLoading}
-              className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00CC66] text-black font-bold py-4 px-6 rounded-xl hover:from-[#00CC66] hover:to-[#00FF7F] transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg mb-4 flex items-center justify-center gap-3"
-            >
-              {accountKitLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
-                  Connecting Wallet...
-                </>
-              ) : (
-                <>
-                  <Wallet className="w-5 h-5" />
-                  Sign In with Smart Wallet / Social
-                  <Sparkles className="w-4 h-4" />
-                </>
-              )}
-            </button>
-            <div className="text-center">
-              <span className="text-xs text-gray-400">Powered by Alchemy</span>
-            </div>
+        <div className="mb-6">
+          <button
+            onClick={() => openAuthModal()}
+            disabled={accountKitLoading}
+            className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00CC66] text-black font-bold py-4 px-6 rounded-xl hover:from-[#00CC66] hover:to-[#00FF7F] transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg mb-4 flex items-center justify-center gap-3"
+          >
+            {accountKitLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
+                Connecting Wallet...
+              </>
+            ) : (
+              <>
+                <Wallet className="w-5 h-5" />
+                Sign In with Smart Wallet / Social
+                <Sparkles className="w-4 h-4" />
+              </>
+            )}
+          </button>
+          <div className="text-center">
+            <span className="text-xs text-gray-400">Powered by Alchemy</span>
           </div>
-        )}
-
-        {/* Show configuration warning if Alchemy is not configured */}
-        {!isAlchemyConfigured && (
-          <div className="mb-6 p-4 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
-            <p className="text-yellow-400 text-sm">
-              ⚠️ Smart wallet login is not configured. Please set up your
-              Alchemy environment variables to enable social login and smart
-              wallet features.
-            </p>
-          </div>
-        )}
+        </div>
 
         <div className="relative mb-6">
           <div className="absolute inset-0 flex items-center">
