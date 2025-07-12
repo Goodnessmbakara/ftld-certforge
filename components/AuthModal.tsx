@@ -26,6 +26,11 @@ export default function AuthModal({
   const [walletLoading, setWalletLoading] = useState(false);
   const supabase = useSupabaseClient();
 
+  // Check if Alchemy environment variables are set
+  const hasAlchemyConfig =
+    process.env.NEXT_PUBLIC_ALCHEMY_API_KEY &&
+    process.env.NEXT_PUBLIC_ALCHEMY_POLICY_ID;
+
   const { openModal, isLoading: accountKitLoading } = useAccountKit({
     onSuccess: async (account) => {
       // account.address is the smart wallet address
@@ -84,6 +89,13 @@ export default function AuthModal({
   };
 
   const createSmartWallet = async (userId: string) => {
+    if (!hasAlchemyConfig) {
+      console.warn(
+        "Alchemy configuration not found, skipping smart wallet creation"
+      );
+      return;
+    }
+
     try {
       const smartAccountClient = await createAlchemySmartAccountClient({
         chain: sepolia,
@@ -150,37 +162,48 @@ export default function AuthModal({
         </div>
 
         {/* Alchemy Smart Wallet Auth Button */}
-        <button
-          onClick={openModal}
-          disabled={accountKitLoading}
-          className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00CC66] text-black font-bold py-3 px-4 rounded-xl mb-6 flex items-center justify-center space-x-2 hover:from-[#00CC66] hover:to-[#00FF7F] transition-all duration-300 disabled:opacity-50 border-2 border-[#00FF7F]"
-        >
-          {accountKitLoading ? (
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black" />
-          ) : (
-            <>
-              <Wallet size={20} />
-              <span>Sign in with Smart Wallet</span>
-              <img
-                src="https://static.alchemyapi.io/images/logos/alchemy-logo-icon.svg"
-                alt="Alchemy"
-                className="w-5 h-5 ml-2"
-              />
-            </>
-          )}
-        </button>
-        <div className="text-center mb-4">
-          <span className="text-xs text-gray-400">
-            Empowered by{" "}
-            <span className="text-[#00FF7F] font-bold">Alchemy</span>
-          </span>
-        </div>
-        {/* Divider */}
-        <div className="flex items-center mb-6">
-          <div className="flex-1 border-t border-gray-700" />
-          <span className="px-4 text-gray-500 text-sm">or</span>
-          <div className="flex-1 border-t border-gray-700" />
-        </div>
+        {hasAlchemyConfig ? (
+          <>
+            <button
+              onClick={openModal}
+              disabled={accountKitLoading}
+              className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00CC66] text-black font-bold py-3 px-4 rounded-xl mb-6 flex items-center justify-center space-x-2 hover:from-[#00CC66] hover:to-[#00FF7F] transition-all duration-300 disabled:opacity-50 border-2 border-[#00FF7F]"
+            >
+              {accountKitLoading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black" />
+              ) : (
+                <>
+                  <Wallet size={20} />
+                  <span>Sign in with Smart Wallet</span>
+                  <img
+                    src="https://static.alchemyapi.io/images/logos/alchemy-logo-icon.svg"
+                    alt="Alchemy"
+                    className="w-5 h-5 ml-2"
+                  />
+                </>
+              )}
+            </button>
+            <div className="text-center mb-4">
+              <span className="text-xs text-gray-400">
+                Empowered by{" "}
+                <span className="text-[#00FF7F] font-bold">Alchemy</span>
+              </span>
+            </div>
+            {/* Divider */}
+            <div className="flex items-center mb-6">
+              <div className="flex-1 border-t border-gray-700" />
+              <span className="px-4 text-gray-500 text-sm">or</span>
+              <div className="flex-1 border-t border-gray-700" />
+            </div>
+          </>
+        ) : (
+          <div className="mb-6 p-4 bg-yellow-900/20 border border-yellow-500/50 rounded-xl">
+            <p className="text-yellow-400 text-sm text-center">
+              Smart wallet feature requires Alchemy configuration. Please set up
+              your environment variables.
+            </p>
+          </div>
+        )}
 
         {/* Email Form */}
         <form onSubmit={handleEmailAuth} className="space-y-4">
