@@ -17,6 +17,20 @@ ON certificates(verification_code);
 CREATE INDEX IF NOT EXISTS idx_certificates_student_name 
 ON certificates(student_name);
 
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create index on email for fast lookups
+CREATE INDEX IF NOT EXISTS idx_users_email 
+ON users(email);
+
 -- Create programs table for dynamic program management
 CREATE TABLE IF NOT EXISTS programs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -32,3 +46,8 @@ INSERT INTO programs (name, description, is_active) VALUES
 ('Future Program 1', 'Advanced DeFi protocols and strategies', false),
 ('Future Program 2', 'NFT development and marketplace creation', false)
 ON CONFLICT (name) DO NOTHING;
+
+-- Insert initial admin user
+INSERT INTO users (email, password_hash, role)
+VALUES ('admin@example.com', '$2b$10$PLACEHOLDERHASH', 'admin')
+ON CONFLICT (email) DO NOTHING;

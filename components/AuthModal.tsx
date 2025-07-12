@@ -20,17 +20,24 @@ export default function AuthModal({
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [signupSuccess, setSignupSuccess] = useState(false);
   const supabase = useSupabaseClient();
 
-  // Reset form when modal opens/closes
+  // Reset form and success message when modal opens/closes or mode switches
   useEffect(() => {
     if (isOpen) {
       setEmail("");
       setPassword("");
       setError("");
       setMode("signup");
+      setSignupSuccess(false);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    setSignupSuccess(false);
+    setError("");
+  }, [mode]);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +52,7 @@ export default function AuthModal({
         });
         if (error) throw error;
         if (data.user) {
+          setSignupSuccess(true); // Show success message
           onSuccess(data.user);
         }
       } else {
@@ -81,6 +89,27 @@ export default function AuthModal({
           </button>
         </div>
 
+        {/* Success message after signup */}
+        {signupSuccess && (
+          <div className="p-3 bg-green-500/20 border border-green-500/30 rounded-lg mb-4">
+            <p className="text-green-400 text-sm font-medium">
+              🎉 Signup successful! Please check your email and verify your
+              account to activate your FTLD CertForge profile.
+              <br />
+              <span className="text-gray-300">
+                Didn&apos;t get the email? Check your spam or promotions folder.
+              </span>
+            </p>
+          </div>
+        )}
+
+        {/* Error message */}
+        {error && (
+          <div className="p-3 bg-red-500/20 border border-red-500/30 rounded-lg mb-4">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+
         {/* Email Authentication */}
         <form onSubmit={handleEmailAuth} className="space-y-4">
           <div>
@@ -94,6 +123,7 @@ export default function AuthModal({
               className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-colors"
               placeholder="Enter your email"
               required
+              disabled={signupSuccess}
             />
           </div>
 
@@ -108,18 +138,13 @@ export default function AuthModal({
               className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-[#00FF7F] focus:outline-none transition-colors"
               placeholder="Enter your password"
               required
+              disabled={signupSuccess}
             />
           </div>
 
-          {error && (
-            <div className="p-3 bg-red-500/20 border border-red-500/30 rounded-lg">
-              <p className="text-red-400 text-sm">{error}</p>
-            </div>
-          )}
-
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || signupSuccess}
             className="w-full bg-gradient-to-r from-[#0014A8] to-[#000080] text-white font-bold py-4 px-6 rounded-xl hover:from-[#000080] hover:to-[#0014A8] transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg flex items-center justify-center gap-3"
           >
             {loading ? (
@@ -139,7 +164,9 @@ export default function AuthModal({
 
         <div className="mt-6 text-center">
           <p className="text-gray-400">
-            {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
+            {mode === "signup"
+              ? "Already have an account?"
+              : "Don't have an account?"}{" "}
             <button
               onClick={() => setMode(mode === "signup" ? "login" : "signup")}
               className="text-[#00FF7F] hover:text-[#00CC66] transition-colors font-medium"
