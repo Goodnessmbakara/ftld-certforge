@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Mail, ArrowRight, Wallet, Sparkles } from "lucide-react";
+import { X, Mail, ArrowRight } from "lucide-react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import { useAuthModal } from "@account-kit/react";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -22,26 +21,6 @@ export default function AuthModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const supabase = useSupabaseClient();
-
-  // Use Alchemy Account Kit modal for social login and wallet connection
-  const { openAuthModal, isLoading: accountKitLoading } = useAuthModal({
-    onSuccess: async (account) => {
-      // account.address is the smart wallet address
-      // Store this in Supabase user profile
-      const user = supabase.auth.user ? await supabase.auth.user() : null;
-      if (user && account?.address) {
-        await supabase.from("users").upsert({
-          id: user.id,
-          wallet_address: account.address,
-        });
-      }
-      onSuccess(account);
-      onClose();
-    },
-    onError: (error) => {
-      setError(error.message || "Authentication failed");
-    },
-  });
 
   // Reset form when modal opens/closes
   useEffect(() => {
@@ -102,42 +81,6 @@ export default function AuthModal({
           </button>
         </div>
 
-        {/* Alchemy Smart Wallet Social Login */}
-        <div className="mb-6">
-          <button
-            onClick={() => openAuthModal()}
-            disabled={accountKitLoading}
-            className="w-full bg-gradient-to-r from-[#00FF7F] to-[#00CC66] text-black font-bold py-4 px-6 rounded-xl hover:from-[#00CC66] hover:to-[#00FF7F] transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg mb-4 flex items-center justify-center gap-3"
-          >
-            {accountKitLoading ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
-                Connecting Wallet...
-              </>
-            ) : (
-              <>
-                <Wallet className="w-5 h-5" />
-                Sign In with Smart Wallet / Social
-                <Sparkles className="w-4 h-4" />
-              </>
-            )}
-          </button>
-          <div className="text-center">
-            <span className="text-xs text-gray-400">Powered by Alchemy</span>
-          </div>
-        </div>
-
-        <div className="relative mb-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-700"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-gray-900 text-gray-400">
-              or continue with email
-            </span>
-          </div>
-        </div>
-
         {/* Email Authentication */}
         <form onSubmit={handleEmailAuth} className="space-y-4">
           <div>
@@ -196,9 +139,7 @@ export default function AuthModal({
 
         <div className="mt-6 text-center">
           <p className="text-gray-400">
-            {mode === "signup"
-              ? "Already have an account?"
-              : "Don't have an account?"}{" "}
+            {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
             <button
               onClick={() => setMode(mode === "signup" ? "login" : "signup")}
               className="text-[#00FF7F] hover:text-[#00CC66] transition-colors font-medium"

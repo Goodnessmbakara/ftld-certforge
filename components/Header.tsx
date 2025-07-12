@@ -1,11 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useUserContext } from "../contexts/UserContext";
-import { Wallet } from "lucide-react";
 import { useState } from "react";
 
 export default function Header() {
-  const { user, walletAddress, signOut } = useUserContext();
+  const { user, signOut } = useUserContext();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -71,7 +70,9 @@ export default function Header() {
                   className="flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 px-4 py-2 rounded-xl transition-colors"
                 >
                   <div className="w-8 h-8 bg-[#00FF7F] rounded-full flex items-center justify-center">
-                    <Wallet className="w-4 h-4 text-black" />
+                    <span className="text-black font-bold text-sm">
+                      {user.email?.charAt(0).toUpperCase() || "U"}
+                    </span>
                   </div>
                   <span className="text-white text-sm font-medium">
                     {user.email?.split("@")[0] || "User"}
@@ -81,26 +82,9 @@ export default function Header() {
                   <div className="absolute right-0 top-full mt-2 w-72 bg-[#101010] border border-gray-800 rounded-xl shadow-xl z-50">
                     <div className="p-4 border-b border-gray-800">
                       <p className="text-white font-medium">{user.email}</p>
-                      {walletAddress && (
-                        <div className="mt-2 flex items-center space-x-2">
-                          <Wallet className="w-4 h-4 text-[#00FF7F]" />
-                          <span className="text-gray-400 text-xs font-mono">
-                            {walletAddress.slice(0, 6)}...
-                            {walletAddress.slice(-4)}
-                          </span>
-                        </div>
-                      )}
                       <div className="mt-2 flex items-center space-x-2">
-                        <img
-                          src="https://static.alchemyapi.io/images/logos/alchemy-logo-icon.svg"
-                          alt="Alchemy"
-                          className="w-4 h-4"
-                        />
                         <span className="text-xs text-gray-400">
-                          Powered by{" "}
-                          <span className="text-[#00FF7F] font-bold">
-                            Alchemy
-                          </span>
+                          Signed in with Supabase
                         </span>
                       </div>
                     </div>

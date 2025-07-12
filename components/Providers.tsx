@@ -4,9 +4,6 @@ import { UserProvider } from "../contexts/UserContext";
 import { AuthProvider } from "../contexts/AuthContext";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
-import { AlchemyAccountProvider } from "@account-kit/react";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { alchemyConfig, queryClient } from "../lib/alchemyConfig";
 import { useState, useEffect } from "react";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
@@ -29,16 +26,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <SessionContextProvider supabaseClient={supabaseClient}>
-      <QueryClientProvider client={queryClient}>
-        <AlchemyAccountProvider
-          config={alchemyConfig}
-          queryClient={queryClient}
-        >
-          <AuthProvider>
-            <UserProvider>{children}</UserProvider>
-          </AuthProvider>
-        </AlchemyAccountProvider>
-      </QueryClientProvider>
+      <AuthProvider>
+        <UserProvider>{children}</UserProvider>
+      </AuthProvider>
     </SessionContextProvider>
   );
 }
