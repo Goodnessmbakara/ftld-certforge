@@ -18,6 +18,9 @@ import {
   Sparkles,
 } from "lucide-react";
 
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+
 export default function HomePage() {
   const [certificateCount, setCertificateCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -38,289 +41,203 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen bg-black">
       <Header />
 
-      {/* Hero Section - Animated and Branded */}
-      <section className="relative container mx-auto px-4 py-20 text-center">
-        {/* Floating FTLD Logo with Glow */}
-        <div
-          className={`transition-all duration-1000 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
-        >
-          <div className="relative inline-block mb-8">
-            <div className="absolute inset-0 bg-[#00FF7F] rounded-full blur-3xl opacity-20 animate-pulse"></div>
-            <div className="relative w-32 h-32 mx-auto">
-              <Image
-                src="/ftld-logo.svg"
-                alt="FTLD Logo"
-                width={128}
-                height={128}
-                className="w-full h-full object-contain animate-pulse"
-                style={{ filter: "drop-shadow(0 0 20px #00FF7F40)" }}
-              />
-            </div>
-          </div>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300FF7F' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          />
+        </div>
 
-          {/* Hero Headlines */}
-          <div className="max-w-5xl mx-auto mb-12">
-            <h1 className="text-6xl md:text-8xl font-ultra font-bold mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-[#00FF7F] via-white to-[#0014A8] bg-clip-text text-transparent">
-                For The Love
-              </span>
+        <div className="container mx-auto px-4 py-20 text-center relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-6xl md:text-8xl font-ultra font-bold mb-8">
+              <span className="text-white">FTLD</span>
               <br />
-              <span className="text-white">Of DeFi</span>
+              <span className="bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
+                CertForge
+              </span>
             </h1>
-            <p className="text-2xl md:text-3xl text-gray-300 mb-4 leading-relaxed font-gill-sans">
-              Empowering blockchain education through
+            <p className="text-xl md:text-2xl text-gray-400 mb-12 font-gill-sans">
+              For The Love Of Defi - Blockchain Certification Platform
             </p>
-            <p className="text-xl md:text-2xl text-[#00FF7F] font-semibold font-gill-sans">
-              verified achievements & community recognition
-            </p>
-          </div>
 
-          {/* Dynamic CTAs */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-            <Link
-              href="/admin"
-              className="group bg-[#00FF7F] text-black font-bold text-xl px-10 py-5 rounded-full hover:bg-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-[#00FF7F]/50 flex items-center gap-3"
-            >
-              <Award className="w-6 h-6" />
-              Generate Certificate
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              href="/verify"
-              className="group bg-transparent border-2 border-[#0014A8] text-white font-bold text-xl px-10 py-5 rounded-full hover:bg-[#0014A8] transition-all duration-300 transform hover:scale-105 flex items-center gap-3"
-            >
-              <Shield className="w-6 h-6" />
-              Verify Now
-            </Link>
-          </div>
-
-          {/* Live Stats */}
-          <div className="inline-flex items-center gap-3 bg-gray-900/50 backdrop-blur-sm border border-[#00FF7F]/30 rounded-full px-8 py-4">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[#00FF7F] rounded-full animate-pulse"></div>
-              <span className="text-gray-300">Live:</span>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+              <Link
+                href="/admin"
+                className="group bg-[#00FF7F] text-black font-bold text-xl px-10 py-5 rounded-full hover:bg-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-[#00FF7F]/50 flex items-center gap-3"
+              >
+                <Award className="w-6 h-6" />
+                Generate Certificate
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/verify"
+                className="group bg-transparent border-2 border-[#0014A8] text-white font-bold text-xl px-10 py-5 rounded-full hover:bg-[#0014A8] transition-all duration-300 transform hover:scale-105 flex items-center gap-3"
+              >
+                <Shield className="w-6 h-6" />
+                Verify Now
+              </Link>
             </div>
-            <span className="text-2xl font-bold text-[#00FF7F]">
-              {mounted ? certificateCount : 127}+
-            </span>
-            <span className="text-white">certificates issued</span>
+
+            {/* Live Stats */}
+            <div className="inline-flex items-center gap-3 bg-gray-900/50 backdrop-blur-sm border border-[#00FF7F]/30 rounded-full px-8 py-4">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-[#00FF7F] rounded-full animate-pulse"></div>
+                <span className="text-gray-300">Live:</span>
+              </div>
+              <span className="text-2xl font-bold text-[#00FF7F]">
+                {mounted ? certificateCount : 127}+
+              </span>
+              <span className="text-white">certificates issued</span>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Visual Journey Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-ultra font-bold mb-6">
-            <span className="text-white">Your Journey to</span>
-            <br />
-            <span className="bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
-              Blockchain Mastery
-            </span>
-          </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto font-gill-sans">
-            From learning to certification, we're with you every step of the way
-          </p>
-        </div>
+      <section className="py-20 relative">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-ultra font-bold mb-6">
+              <span className="text-white">Your Journey to</span>
+              <br />
+              <span className="bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
+                Blockchain Mastery
+              </span>
+            </h2>
+            <p className="text-xl text-gray-400 font-gill-sans">
+              From learning to certification, we guide you every step of the way
+            </p>
+          </div>
 
-        {/* Journey Steps */}
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 relative">
-            {/* Connecting Line */}
-            <div className="hidden md:block absolute top-16 left-1/2 transform -translate-x-1/2 w-full h-1 bg-gradient-to-r from-[#00FF7F] via-[#0014A8] to-[#00FF7F] opacity-30"></div>
-
-            {[
-              {
-                icon: BookOpen,
-                title: "Learn",
-                desc: "Master blockchain & DeFi concepts",
-                color: "#00FF7F",
-              },
-              {
-                icon: CheckCircle,
-                title: "Complete",
-                desc: "Finish your chosen program",
-                color: "#0014A8",
-              },
-              {
-                icon: Award,
-                title: "Certify",
-                desc: "Receive your verified certificate",
-                color: "#00FF7F",
-              },
-              {
-                icon: Share2,
-                title: "Share",
-                desc: "Showcase your achievement",
-                color: "#0014A8",
-              },
-            ].map((step, index) => (
-              <div key={index} className="relative">
-                <div className="text-center group">
-                  <div
-                    className="w-32 h-32 mx-auto mb-6 rounded-full flex items-center justify-center relative transition-all duration-500 group-hover:scale-110"
-                    style={{
-                      background: `linear-gradient(135deg, ${step.color}20, ${step.color}10)`,
-                      border: `2px solid ${step.color}40`,
-                    }}
-                  >
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent to-black/20"></div>
-                    <step.icon
-                      className="w-12 h-12 relative z-10"
-                      style={{ color: step.color }}
-                    />
-                  </div>
-                  <h3
-                    className="text-2xl font-ultra font-bold mb-3"
-                    style={{ color: step.color }}
-                  >
-                    {step.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed font-gill-sans">
-                    {step.desc}
-                  </p>
-                </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Step 1 */}
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#00FF7F] to-[#00CC66] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <BookOpen className="w-10 h-10 text-black" />
               </div>
-            ))}
+              <h3 className="text-2xl font-ultra font-bold text-white mb-4">
+                Learn
+              </h3>
+              <p className="text-gray-400 font-gill-sans">
+                Master blockchain fundamentals and advanced concepts through our
+                comprehensive curriculum
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#0014A8] to-[#000080] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Award className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-ultra font-bold text-white mb-4">
+                Certify
+              </h3>
+              <p className="text-gray-400 font-gill-sans">
+                Earn verifiable certificates that showcase your expertise to the
+                blockchain community
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#00FF7F] to-[#0014A8] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Globe className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-ultra font-bold text-white mb-4">
+                Connect
+              </h3>
+              <p className="text-gray-400 font-gill-sans">
+                Join the global FTLD community and connect with fellow
+                blockchain enthusiasts
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Social Proof & Community */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-ultra font-bold mb-6 text-white">
-            Trusted by the{" "}
-            <span className="text-[#00FF7F]">FTLD Community</span>
-          </h2>
-          <p className="text-xl text-gray-400 font-gill-sans">
-            Join hundreds of blockchain enthusiasts who've earned their
-            credentials
-          </p>
-        </div>
+      {/* Features Section */}
+      <section className="py-20 bg-gray-900/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-ultra font-bold mb-6">
+              <span className="text-white">Why Choose</span>
+              <br />
+              <span className="bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent">
+                FTLD CertForge?
+              </span>
+            </h2>
+          </div>
 
-        {/* Certificate Showcase */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
-          {[
-            {
-              name: "Alex C.",
-              program: "Smart Contract Training",
-              date: "Dec 2024",
-            },
-            {
-              name: "Sarah M.",
-              program: "Smart Contract Training",
-              date: "Jan 2025",
-            },
-            {
-              name: "Jordan K.",
-              program: "Smart Contract Training",
-              date: "Jan 2025",
-            },
-          ].map((cert, index) => (
-            <div key={index} className="group">
-              <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-[#00FF7F]/20 rounded-2xl p-6 transform transition-all duration-300 group-hover:scale-105 group-hover:border-[#00FF7F]/50">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-[#00FF7F]/20 rounded-full flex items-center justify-center">
-                    <Star className="w-6 h-6 text-[#00FF7F]" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white font-gill-sans">
-                      {cert.name}
-                    </h4>
-                    <p className="text-sm text-gray-400 font-gill-sans">
-                      {cert.date}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-gray-300 mb-4 font-gill-sans">
-                  {cert.program}
-                </p>
-                <div className="flex items-center gap-2 text-[#00FF7F] text-sm">
-                  <CheckCircle className="w-4 h-4" />
-                  Verified Certificate
-                </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            {/* Feature 1 */}
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Shield className="w-8 h-8 text-black" />
               </div>
+              <h3 className="text-xl font-ultra font-bold text-white mb-3">
+                Secure
+              </h3>
+              <p className="text-gray-400 text-sm font-gill-sans">
+                Blockchain-verified certificates that can't be forged or
+                tampered with
+              </p>
             </div>
-          ))}
-        </div>
 
-        {/* Partnership Badge */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-4 bg-[#0014A8]/20 border border-[#0014A8]/40 rounded-full px-8 py-4">
-            <Globe className="w-8 h-8 text-[#0014A8]" />
-            <span className="text-xl font-bold text-white font-gill-sans">
-              Powered by Lisk Partnership
-            </span>
-            <div className="w-2 h-2 bg-[#0014A8] rounded-full animate-pulse"></div>
+            {/* Feature 2 */}
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-[#0014A8] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-ultra font-bold text-white mb-3">
+                Instant
+              </h3>
+              <p className="text-gray-400 text-sm font-gill-sans">
+                Get your certificates instantly with real-time verification
+                capabilities
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-[#00FF7F] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Users className="w-8 h-8 text-black" />
+              </div>
+              <h3 className="text-xl font-ultra font-bold text-white mb-3">
+                Community
+              </h3>
+              <p className="text-gray-400 text-sm font-gill-sans">
+                Join a thriving community of blockchain professionals and
+                enthusiasts
+              </p>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-[#0014A8] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-ultra font-bold text-white mb-3">
+                Innovative
+              </h3>
+              <p className="text-gray-400 text-sm font-gill-sans">
+                Cutting-edge technology with smart contracts and decentralized
+                verification
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Enhanced Features Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-ultra font-bold mb-6 text-white">
-            Why Choose <span className="text-[#00FF7F]">FTLD CertForge</span>
-          </h2>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            {
-              icon: Award,
-              title: "Blockchain Verified",
-              desc: "Every certificate is secured on the blockchain for ultimate authenticity",
-              color: "#00FF7F",
-            },
-            {
-              icon: Shield,
-              title: "Instant Verification",
-              desc: "QR codes and unique IDs for immediate authenticity checks",
-              color: "#0014A8",
-            },
-            {
-              icon: Users,
-              title: "Social Sharing",
-              desc: "Share your achievements on LinkedIn, Twitter, and beyond",
-              color: "#00FF7F",
-            },
-            {
-              icon: Zap,
-              title: "Lightning Fast",
-              desc: "Generate and verify certificates in seconds, not minutes",
-              color: "#0014A8",
-            },
-          ].map((feature, index) => (
-            <div key={index} className="group">
-              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8 text-center transition-all duration-300 group-hover:border-[#00FF7F]/50 group-hover:transform group-hover:scale-105">
-                <div
-                  className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center transition-all duration-300"
-                  style={{ backgroundColor: `${feature.color}20` }}
-                >
-                  <feature.icon
-                    className="w-10 h-10 transition-all duration-300 group-hover:scale-110"
-                    style={{ color: feature.color }}
-                  />
-                </div>
-                <h3 className="text-2xl font-ultra font-bold mb-4 text-white">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 leading-relaxed font-gill-sans">
-                  {feature.desc}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer CTA */}
+      {/* CTA Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-5xl font-ultra font-bold mb-6">

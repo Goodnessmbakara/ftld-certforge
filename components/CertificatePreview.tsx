@@ -104,12 +104,12 @@ export default function CertificatePreview({
   return (
     <div className="space-y-6">
       {/* Redesigned Certificate Design */}
-      <div
+        <div
         className="relative bg-[#101010] text-white p-4 md:p-10 rounded-2xl shadow-2xl overflow-hidden border-4 border-[#00FF7F] print:bg-white print:text-black print:border-black print-mode:bg-white print-mode:text-black print-mode:border-black"
         id="certificate"
-        style={{
+          style={{
           backgroundImage: "url('/pattern-bg.png')",
-          backgroundRepeat: "repeat",
+            backgroundRepeat: "repeat",
           backgroundSize: "300px 300px",
           backgroundBlendMode: "multiply",
         }}
@@ -124,10 +124,10 @@ export default function CertificatePreview({
             height={100}
             className="w-24 h-24 md:w-32 md:h-32 object-contain z-10 drop-shadow-[0_0_20px_#00FF7F80]"
           />
-        </div>
+              </div>
         {/* Certificate Title */}
         <h1 className="text-4xl md:text-5xl font-ultra font-extrabold text-center mb-2 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent tracking-tight">
-          Certificate of Completion
+              Certificate of Completion
         </h1>
         <div className="w-32 h-1.5 bg-[#00FF7F] mx-auto rounded-full mb-8"></div>
         {/* Student Name & Program */}
@@ -137,22 +137,22 @@ export default function CertificatePreview({
           </p>
           <h2 className="text-4xl md:text-5xl font-ultra font-bold text-white mb-2 leading-tight">
             {certificate.studentName}
-          </h2>
+            </h2>
           <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">
             has successfully completed the
           </p>
           <h3 className="text-2xl md:text-3xl font-ultra font-bold text-[#00FF7F] mb-2 leading-tight">
             {certificate.program}
-          </h3>
+            </h3>
           <p className="text-lg md:text-xl text-gray-300 font-gill-sans">
-            program on{" "}
-            {new Date(certificate.completionDate).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-        </div>
+              program on{" "}
+              {new Date(certificate.completionDate).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          </div>
         {/* Certificate Seal & Lisk Badge */}
         <div className="flex flex-col md:flex-row justify-center items-center gap-8 mb-8">
           {/* Certificate Seal */}
@@ -165,12 +165,12 @@ export default function CertificatePreview({
             </span>
           </div>
           {/* Lisk Partnership Badge */}
-          <div
-            className="relative group cursor-pointer"
-            onMouseEnter={() => setShowLiskBadge(true)}
-            onMouseLeave={() => setShowLiskBadge(false)}
-          >
             <div
+            className="relative group cursor-pointer"
+              onMouseEnter={() => setShowLiskBadge(true)}
+              onMouseLeave={() => setShowLiskBadge(false)}
+            >
+              <div
               className={`px-8 py-3 rounded-full border-2 border-[#0014A8] transition-all duration-300 flex items-center space-x-2 ${
                 showLiskBadge
                   ? "bg-[#0014A8] text-white scale-105 shadow-lg"
@@ -185,17 +185,17 @@ export default function CertificatePreview({
               <span className="font-bold text-lg font-gill-sans">
                 Powered by Lisk Partnership
               </span>
-            </div>
-            {showLiskBadge && (
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-4 py-2 bg-black text-white text-sm rounded-lg shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Blockchain-verified authenticity
               </div>
-            )}
+              {showLiskBadge && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-4 py-2 bg-black text-white text-sm rounded-lg shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Blockchain-verified authenticity
+                </div>
+              )}
+            </div>
           </div>
-        </div>
         {/* QR Code & Verification Code */}
         <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 md:px-8 mt-8">
-          <div className="text-left mb-6 md:mb-0">
+            <div className="text-left mb-6 md:mb-0">
             <p className="text-base font-bold text-[#00FF7F] font-gill-sans mb-2">
               Verification Code:
             </p>
@@ -208,7 +208,7 @@ export default function CertificatePreview({
               Use this code to verify certificate authenticity
             </p>
           </div>
-          <div className="text-center">
+            <div className="text-center">
             <div className="inline-block bg-white p-3 rounded-xl shadow-xl border-2 border-[#0014A8]">
               {verificationUrl && (
                 <QRCodeGenerator value={verificationUrl} size={140} />

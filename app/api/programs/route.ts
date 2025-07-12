@@ -1,6 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
@@ -14,7 +17,7 @@ if (!supabaseUrl || !supabaseServiceRoleKey) {
   supabase = createClient(supabaseUrl, supabaseServiceRoleKey)
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   if (!supabase) {
     return NextResponse.json(
       { success: false, error: "Supabase client not initialized due to missing environment variables." },
@@ -22,11 +25,7 @@ export async function GET() {
     )
   }
   try {
-    const { data, error } = await supabase
-      .from("programs")
-      .select("*")
-      .eq("is_active", true)
-      .order("created_at", { ascending: true })
+    const { data, error } = await supabase.from("programs").select("*").eq("is_active", true).order("name")
 
     if (error) {
       throw error
@@ -34,7 +33,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      programs: data,
+      programs: data || [],
     })
   } catch (error) {
     console.error("Error fetching programs:", error)
