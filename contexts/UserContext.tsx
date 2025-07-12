@@ -52,7 +52,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }, [user, supabase]);
 
   const signOut = async () => {
-    // This will be handled by the AuthProvider
+    await supabase.auth.signOut();
     if (typeof window !== "undefined") {
       const event = new CustomEvent("sign-out");
       window.dispatchEvent(event);

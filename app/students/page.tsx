@@ -12,6 +12,7 @@ import {
   Users,
   TrendingUp,
 } from "lucide-react";
+import html2pdf from "html2pdf.js";
 
 // Force dynamic rendering
 export const dynamic = "force-dynamic";
@@ -58,11 +59,11 @@ export default function StudentsPage() {
         offset: pagination.offset.toString(),
       });
 
-    if (searchTerm) {
+      if (searchTerm) {
         params.append("search", searchTerm);
-    }
+      }
 
-    if (selectedProgram) {
+      if (selectedProgram) {
         params.append("program", selectedProgram);
       }
 
@@ -113,24 +114,33 @@ export default function StudentsPage() {
   };
 
   const downloadCertificate = (cert: Certificate) => {
-    const certificateData = {
-      studentName: cert.studentName,
-      program: cert.program,
-      completionDate: cert.completionDate,
-      verificationCode: cert.verificationCode,
-    };
-
-    const blob = new Blob([JSON.stringify(certificateData, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `certificate-${cert.studentName}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // Create a hidden div with the certificate HTML
+    const element = document.createElement("div");
+    element.innerHTML = `
+      <div style="font-family: 'Gill Sans', Arial, sans-serif; padding: 32px; background: #fff; border-radius: 16px; width: 480px; margin: 0 auto;">
+        <h1 style="color: #00FF7F; font-size: 2.2em; margin-bottom: 0.5em;">FTLD CertForge</h1>
+        <h2 style="color: #0014A8; margin-bottom: 1em;">Certificate of Completion</h2>
+        <p style="font-size: 1.1em; color: #222; margin-bottom: 1.5em;">This certifies that</p>
+        <h3 style="font-size: 1.5em; color: #00FF7F; margin-bottom: 0.5em;">${cert.studentName}</h3>
+        <p style="font-size: 1.1em; color: #222; margin-bottom: 1em;">has successfully completed the</p>
+        <p style="font-size: 1.2em; color: #0014A8; font-weight: bold; margin-bottom: 1em;">${cert.program}</p>
+        <p style="font-size: 1.1em; color: #222; margin-bottom: 1em;">on <b>${cert.completionDate}</b></p>
+        <p style="font-size: 1em; color: #888; margin-bottom: 1em;">Verification Code: <b>${cert.verificationCode}</b></p>
+        <div style="margin-top: 2em; color: #888; font-size: 0.95em;">For The Love Of DeFi</div>
+      </div>
+    `;
+    document.body.appendChild(element);
+    html2pdf()
+      .from(element)
+      .set({
+        margin: 0,
+        filename: `certificate-${cert.studentName}.pdf`,
+        html2canvas: { scale: 2 },
+      })
+      .save()
+      .then(() => {
+        document.body.removeChild(element);
+      });
   };
 
   const viewCertificate = (cert: Certificate) => {
@@ -154,7 +164,7 @@ export default function StudentsPage() {
           <p className="text-xl text-gray-400 font-gill-sans">
             View and manage all issued certificates
           </p>
-          </div>
+        </div>
 
         {/* Stats */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -206,8 +216,8 @@ export default function StudentsPage() {
                 <TrendingUp className="w-6 h-6 text-[#00FF7F]" />
               </div>
             </div>
-              </div>
-            </div>
+          </div>
+        </div>
 
         {/* Search and Filters */}
         <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 mb-8">
@@ -247,9 +257,9 @@ export default function StudentsPage() {
                 <Search className="w-4 h-4" />
                 Search
               </button>
-                        </div>
+            </div>
           </form>
-                    </div>
+        </div>
 
         {/* Certificates Table */}
         <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl overflow-hidden">
@@ -315,20 +325,20 @@ export default function StudentsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
-                      <button
+                          <button
                             onClick={() => viewCertificate(cert)}
                             className="bg-[#0014A8] text-white p-2 rounded-lg hover:bg-[#000080] transition-colors"
-                        title="View Certificate"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
+                            title="View Certificate"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
                             onClick={() => downloadCertificate(cert)}
                             className="bg-[#00FF7F] text-black p-2 rounded-lg hover:bg-[#00CC66] transition-colors"
                             title="Download Certificate"
-                      >
-                        <Download className="w-4 h-4" />
-                      </button>
+                          >
+                            <Download className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -341,13 +351,13 @@ export default function StudentsPage() {
           {/* Load More */}
           {pagination.hasMore && (
             <div className="p-6 text-center">
-                      <button
+              <button
                 onClick={loadMore}
                 disabled={loading}
                 className="bg-[#00FF7F] text-black font-bold px-8 py-3 rounded-xl hover:bg-[#00CC66] transition-colors disabled:opacity-50"
               >
                 {loading ? "Loading..." : "Load More"}
-                      </button>
+              </button>
             </div>
           )}
         </div>
