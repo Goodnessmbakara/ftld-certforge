@@ -17,11 +17,10 @@ ON certificates(verification_code);
 CREATE INDEX IF NOT EXISTS idx_certificates_student_name 
 ON certificates(student_name);
 
--- Create users table
+-- Create users table (without password_hash since we use Supabase Auth)
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
     display_name VARCHAR(255) NOT NULL,
     phone VARCHAR(32),
     role VARCHAR(50) NOT NULL DEFAULT 'user',
@@ -49,7 +48,7 @@ INSERT INTO programs (name, description, is_active) VALUES
 ('Future Program 2', 'NFT development and marketplace creation', false)
 ON CONFLICT (name) DO NOTHING;
 
--- Insert initial admin user
-INSERT INTO users (email, password_hash, display_name, phone, role)
-VALUES ('admin@example.com', '$2b$10$PLACEHOLDERHASH', 'Admin User', '+1234567890', 'admin')
+-- Insert initial admin user (without password_hash)
+INSERT INTO users (email, display_name, phone, role)
+VALUES ('admin@example.com', 'Admin User', '+1234567890', 'admin')
 ON CONFLICT (email) DO NOTHING;

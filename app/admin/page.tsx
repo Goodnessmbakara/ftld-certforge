@@ -37,7 +37,7 @@ interface Certificate {
 }
 
 export default function AdminDashboard() {
-  const { user, role, loading } = useUserContext();
+  const { user, displayName, role, loading } = useUserContext();
   const supabaseUser = useUser();
   const [formData, setFormData] = useState({
     studentName: "",
@@ -231,32 +231,229 @@ export default function AdminDashboard() {
     }
   };
 
-  const downloadCertificate = (cert: any) => {
-    // Create a simple certificate PDF or image
-    const certificateData = {
-      studentName: cert.studentName,
-      program: cert.program,
-      completionDate: cert.completionDate,
-      verificationCode: cert.verificationCode,
-    };
+  const downloadCertificate = async (cert: any) => {
+    // Create a temporary certificate element for PDF generation
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = `
+      <div id="certificate-pdf" style="
+        width: 11.7in;
+        height: 8.3in;
+        background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+        border: 0.2in solid #00FF7F;
+        border-radius: 0.3in;
+        padding: 0.5in;
+        position: relative;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        color: white;
+      ">
+        <div style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: radial-gradient(circle at 25% 25%, #00FF7F10 0%, transparent 50%), radial-gradient(circle at 75% 75%, #0014A810 0%, transparent 50%);
+          pointer-events: none;
+        "></div>
+        
+        <div style="text-align: center; margin-bottom: 1in;">
+          <div style="margin-bottom: 0.3in;">
+            <div style="
+              width: 1.5in;
+              height: 1.5in;
+              margin: 0 auto;
+              background: linear-gradient(135deg, #00FF7F, #0014A8);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              box-shadow: 0 0 0.5in rgba(0, 255, 127, 0.3);
+            ">
+              <span style="font-size: 0.8in; font-weight: bold; color: white;">FTLD</span>
+            </div>
+          </div>
+          <h1 style="
+            font-size: 0.8in;
+            font-weight: bold;
+            color: #00FF7F;
+            margin: 0.2in 0;
+            text-shadow: 0 0 0.1in rgba(0, 255, 127, 0.5);
+          ">Certificate of Completion</h1>
+          <div style="
+            width: 3in;
+            height: 0.05in;
+            background: linear-gradient(90deg, #00FF7F, #0014A8);
+            margin: 0.3in auto;
+            border-radius: 0.025in;
+          "></div>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 1in;">
+          <p style="font-size: 0.25in; color: #CCCCCC; margin-bottom: 0.2in;">This certifies that</p>
+          <h2 style="
+            font-size: 0.6in;
+            font-weight: bold;
+            color: white;
+            margin: 0.3in 0;
+            text-shadow: 0 0 0.1in rgba(255, 255, 255, 0.3);
+          ">${cert.studentName}</h2>
+          <p style="font-size: 0.25in; color: #CCCCCC; margin-bottom: 0.2in;">has successfully completed the</p>
+          <h3 style="
+            font-size: 0.4in;
+            font-weight: bold;
+            color: #00FF7F;
+            margin: 0.3in 0;
+            text-shadow: 0 0 0.1in rgba(0, 255, 127, 0.5);
+          ">${cert.program}</h3>
+          <p style="font-size: 0.25in; color: #CCCCCC;">
+            program on ${new Date(cert.completionDate).toLocaleDateString(
+              "en-US",
+              {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }
+            )}
+          </p>
+        </div>
+        
+        <div style="
+          position: absolute;
+          bottom: 0.5in;
+          left: 0.5in;
+          right: 0.5in;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+        ">
+          <div style="text-align: left;">
+            <p style="font-size: 0.15in; color: #00FF7F; font-weight: bold; margin-bottom: 0.1in;">Verification Code:</p>
+            <div style="
+              background: white;
+              border: 0.02in solid #00FF7F;
+              border-radius: 0.1in;
+              padding: 0.15in;
+              box-shadow: 0 0 0.1in rgba(0, 0, 0, 0.3);
+            ">
+              <p style="
+                font-size: 0.25in;
+                font-family: monospace;
+                color: black;
+                font-weight: bold;
+                margin: 0;
+                letter-spacing: 0.05in;
+              ">${cert.verificationCode}</p>
+            </div>
+            <p style="font-size: 0.1in; color: #999999; margin-top: 0.1in;">Use this code to verify certificate authenticity</p>
+          </div>
+        </div>
+        
+        <div style="
+          position: absolute;
+          top: 50%;
+          right: 1in;
+          transform: translateY(-50%);
+          text-align: center;
+        ">
+          <div style="
+            width: 1.2in;
+            height: 1.2in;
+            border-radius: 50%;
+            border: 0.05in solid #0014A8;
+            background: radial-gradient(circle, #0014A820, #0014A810);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0.2in rgba(0, 20, 168, 0.3);
+          ">
+            <span style="font-size: 0.4in; font-weight: bold; color: #00FF7F;">✔</span>
+          </div>
+          <p style="font-size: 0.1in; color: #00FF7F; font-weight: bold; margin-top: 0.1in; letter-spacing: 0.02in;">FTLD SEAL</p>
+        </div>
+      </div>
+    `;
 
-    const blob = new Blob([JSON.stringify(certificateData, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `certificate-${cert.studentName}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    document.body.appendChild(tempDiv);
+
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+
+      const opt = {
+        margin: 0.5,
+        filename: `FTLD_Certificate_${cert.studentName.replace(
+          /\s+/g,
+          "_"
+        )}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+        },
+        jsPDF: {
+          unit: "in",
+          format: "a4",
+          orientation: "landscape",
+        },
+      };
+
+      await html2pdf()
+        .set(opt)
+        .from(tempDiv.querySelector("#certificate-pdf"))
+        .save();
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      document.body.removeChild(tempDiv);
+    }
   };
 
   if (loading) {
     return <div className="text-center text-white py-12">Loading...</div>;
   }
-  if (!user || role !== "admin") {
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center">
+        <Header />
+        <div className="flex flex-col items-center justify-center mt-16 p-8 bg-gray-900 border border-gray-800 rounded-2xl shadow-xl max-w-md w-full">
+          <div className="mb-4">
+            <svg width="48" height="48" fill="none" viewBox="0 0 24 24">
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                fill="#00FF7F"
+                fillOpacity="0.15"
+              />
+              <path
+                d="M12 8v4m0 4h.01"
+                stroke="#00FF7F"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-2">
+            Authentication Required
+          </h2>
+          <p className="text-gray-300 mb-4 text-center max-w-xs">
+            Please sign in to access the admin dashboard.
+          </p>
+          <a
+            href="/"
+            className="inline-block mt-2 px-6 py-2 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] text-white font-bold rounded-xl shadow hover:from-[#0014A8] hover:to-[#00FF7F] transition-all"
+          >
+            Return Home
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  if (role !== "admin") {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center">
         <Header />
@@ -283,6 +480,8 @@ export default function AdminDashboard() {
             Admin Access Required
           </h2>
           <p className="text-gray-300 mb-4 text-center max-w-xs">
+            Hello {displayName || "User"}, you don't have admin privileges.
+            <br />
             Only FTLD CertForge admins can generate certificates.
             <br />
             If you believe you should have access, please contact your program
@@ -313,8 +512,11 @@ export default function AdminDashboard() {
               Dashboard
             </span>
           </h1>
-          <p className="text-xl text-gray-400 font-gill-sans">
+          <p className="text-xl text-gray-400 font-gill-sans mb-2">
             Generate and manage blockchain certificates
+          </p>
+          <p className="text-lg text-[#00FF7F] font-gill-sans">
+            Welcome back, {displayName || "Admin"}! 👋
           </p>
         </div>
 

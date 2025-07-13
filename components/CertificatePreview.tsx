@@ -21,7 +21,6 @@ export default function CertificatePreview({
   certificate,
 }: CertificatePreviewProps) {
   const [showLiskBadge, setShowLiskBadge] = useState(false);
-
   const [verificationUrl, setVerificationUrl] = useState("");
 
   useEffect(() => {
@@ -31,7 +30,7 @@ export default function CertificatePreview({
   }, [certificate.verificationCode]);
 
   const downloadPDF = async () => {
-    const element = document.getElementById("certificate");
+    const element = document.getElementById("certificate-pdf");
     if (!element) return;
 
     const html2pdf = (await import("html2pdf.js")).default;
@@ -55,17 +54,7 @@ export default function CertificatePreview({
       },
     };
 
-    // Temporarily show the certificate in print-friendly mode
-    element.classList.add("print-mode");
-
-    html2pdf()
-      .set(opt)
-      .from(element)
-      .save()
-      .then(() => {
-        // Remove print mode after PDF generation
-        element.classList.remove("print-mode");
-      });
+    html2pdf().set(opt).from(element).save();
   };
 
   const shareOnTwitter = () => {
@@ -103,13 +92,274 @@ export default function CertificatePreview({
 
   return (
     <div className="space-y-6">
-      {/* Redesigned Certificate Design */}
+      {/* PDF Certificate Design - Hidden but used for PDF generation */}
+      <div
+        id="certificate-pdf"
+        className="hidden"
+        style={{
+          width: "11.7in",
+          height: "8.3in",
+          background: "linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%)",
+          border: "0.2in solid #00FF7F",
+          borderRadius: "0.3in",
+          padding: "0.5in",
+          position: "relative",
+          overflow: "hidden",
+          fontFamily: "Arial, sans-serif",
+        }}
+      >
+        {/* Background Pattern */}
         <div
-        className="relative bg-[#101010] text-white p-4 md:p-10 rounded-2xl shadow-2xl overflow-hidden border-4 border-[#00FF7F] print:bg-white print:text-black print:border-black print-mode:bg-white print-mode:text-black print-mode:border-black"
-        id="certificate"
           style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage:
+              "radial-gradient(circle at 25% 25%, #00FF7F10 0%, transparent 50%), radial-gradient(circle at 75% 75%, #0014A810 0%, transparent 50%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "1in" }}>
+          <div style={{ marginBottom: "0.3in" }}>
+            <div
+              style={{
+                width: "1.5in",
+                height: "1.5in",
+                margin: "0 auto",
+                background: "linear-gradient(135deg, #00FF7F, #0014A8)",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 0 0.5in rgba(0, 255, 127, 0.3)",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "0.8in",
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                FTLD
+              </span>
+            </div>
+          </div>
+          <h1
+            style={{
+              fontSize: "0.8in",
+              fontWeight: "bold",
+              color: "#00FF7F",
+              margin: "0.2in 0",
+              textShadow: "0 0 0.1in rgba(0, 255, 127, 0.5)",
+            }}
+          >
+            Certificate of Completion
+          </h1>
+          <div
+            style={{
+              width: "3in",
+              height: "0.05in",
+              background: "linear-gradient(90deg, #00FF7F, #0014A8)",
+              margin: "0.3in auto",
+              borderRadius: "0.025in",
+            }}
+          />
+        </div>
+
+        {/* Main Content */}
+        <div style={{ textAlign: "center", marginBottom: "1in" }}>
+          <p
+            style={{
+              fontSize: "0.25in",
+              color: "#CCCCCC",
+              marginBottom: "0.2in",
+            }}
+          >
+            This certifies that
+          </p>
+          <h2
+            style={{
+              fontSize: "0.6in",
+              fontWeight: "bold",
+              color: "white",
+              margin: "0.3in 0",
+              textShadow: "0 0 0.1in rgba(255, 255, 255, 0.3)",
+            }}
+          >
+            {certificate.studentName}
+          </h2>
+          <p
+            style={{
+              fontSize: "0.25in",
+              color: "#CCCCCC",
+              marginBottom: "0.2in",
+            }}
+          >
+            has successfully completed the
+          </p>
+          <h3
+            style={{
+              fontSize: "0.4in",
+              fontWeight: "bold",
+              color: "#00FF7F",
+              margin: "0.3in 0",
+              textShadow: "0 0 0.1in rgba(0, 255, 127, 0.5)",
+            }}
+          >
+            {certificate.program}
+          </h3>
+          <p style={{ fontSize: "0.25in", color: "#CCCCCC" }}>
+            program on{" "}
+            {new Date(certificate.completionDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "0.5in",
+            left: "0.5in",
+            right: "0.5in",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+          }}
+        >
+          {/* Verification Code */}
+          <div style={{ textAlign: "left" }}>
+            <p
+              style={{
+                fontSize: "0.15in",
+                color: "#00FF7F",
+                fontWeight: "bold",
+                marginBottom: "0.1in",
+              }}
+            >
+              Verification Code:
+            </p>
+            <div
+              style={{
+                background: "white",
+                border: "0.02in solid #00FF7F",
+                borderRadius: "0.1in",
+                padding: "0.15in",
+                boxShadow: "0 0 0.1in rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "0.25in",
+                  fontFamily: "monospace",
+                  color: "black",
+                  fontWeight: "bold",
+                  margin: 0,
+                  letterSpacing: "0.05in",
+                }}
+              >
+                {certificate.verificationCode}
+              </p>
+            </div>
+            <p
+              style={{
+                fontSize: "0.1in",
+                color: "#999999",
+                marginTop: "0.1in",
+              }}
+            >
+              Use this code to verify certificate authenticity
+            </p>
+          </div>
+
+          {/* QR Code */}
+          <div style={{ textAlign: "center" }}>
+            <div
+              style={{
+                background: "white",
+                padding: "0.15in",
+                borderRadius: "0.1in",
+                boxShadow: "0 0 0.1in rgba(0, 0, 0, 0.3)",
+                border: "0.02in solid #0014A8",
+              }}
+            >
+              {verificationUrl && (
+                <QRCodeGenerator value={verificationUrl} size={120} />
+              )}
+            </div>
+            <p
+              style={{
+                fontSize: "0.1in",
+                color: "#999999",
+                marginTop: "0.1in",
+              }}
+            >
+              Scan QR code to verify
+            </p>
+          </div>
+        </div>
+
+        {/* Certificate Seal */}
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "1in",
+            transform: "translateY(-50%)",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "1.2in",
+              height: "1.2in",
+              borderRadius: "50%",
+              border: "0.05in solid #0014A8",
+              background: "radial-gradient(circle, #0014A820, #0014A810)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 0 0.2in rgba(0, 20, 168, 0.3)",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "0.4in",
+                fontWeight: "bold",
+                color: "#00FF7F",
+              }}
+            >
+              ✔
+            </span>
+          </div>
+          <p
+            style={{
+              fontSize: "0.1in",
+              color: "#00FF7F",
+              fontWeight: "bold",
+              marginTop: "0.1in",
+              letterSpacing: "0.02in",
+            }}
+          >
+            FTLD SEAL
+          </p>
+        </div>
+      </div>
+
+      {/* Display Certificate Design */}
+      <div
+        className="relative bg-[#101010] text-white p-4 md:p-10 rounded-2xl shadow-2xl overflow-hidden border-4 border-[#00FF7F]"
+        style={{
           backgroundImage: "url('/pattern-bg.png')",
-            backgroundRepeat: "repeat",
+          backgroundRepeat: "repeat",
           backgroundSize: "300px 300px",
           backgroundBlendMode: "multiply",
         }}
@@ -124,12 +374,14 @@ export default function CertificatePreview({
             height={100}
             className="w-24 h-24 md:w-32 md:h-32 object-contain z-10 drop-shadow-[0_0_20px_#00FF7F80]"
           />
-              </div>
+        </div>
+
         {/* Certificate Title */}
         <h1 className="text-4xl md:text-5xl font-ultra font-extrabold text-center mb-2 bg-gradient-to-r from-[#00FF7F] to-[#0014A8] bg-clip-text text-transparent tracking-tight">
-              Certificate of Completion
+          Certificate of Completion
         </h1>
         <div className="w-32 h-1.5 bg-[#00FF7F] mx-auto rounded-full mb-8"></div>
+
         {/* Student Name & Program */}
         <div className="text-center mb-8">
           <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">
@@ -137,22 +389,23 @@ export default function CertificatePreview({
           </p>
           <h2 className="text-4xl md:text-5xl font-ultra font-bold text-white mb-2 leading-tight">
             {certificate.studentName}
-            </h2>
+          </h2>
           <p className="text-lg md:text-xl text-gray-300 mb-2 font-gill-sans">
             has successfully completed the
           </p>
           <h3 className="text-2xl md:text-3xl font-ultra font-bold text-[#00FF7F] mb-2 leading-tight">
             {certificate.program}
-            </h3>
+          </h3>
           <p className="text-lg md:text-xl text-gray-300 font-gill-sans">
-              program on{" "}
-              {new Date(certificate.completionDate).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          </div>
+            program on{" "}
+            {new Date(certificate.completionDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+
         {/* Certificate Seal & Lisk Badge */}
         <div className="flex flex-col md:flex-row justify-center items-center gap-8 mb-8">
           {/* Certificate Seal */}
@@ -164,13 +417,14 @@ export default function CertificatePreview({
               FTLD SEAL
             </span>
           </div>
+
           {/* Lisk Partnership Badge */}
-            <div
+          <div
             className="relative group cursor-pointer"
-              onMouseEnter={() => setShowLiskBadge(true)}
-              onMouseLeave={() => setShowLiskBadge(false)}
-            >
-              <div
+            onMouseEnter={() => setShowLiskBadge(true)}
+            onMouseLeave={() => setShowLiskBadge(false)}
+          >
+            <div
               className={`px-8 py-3 rounded-full border-2 border-[#0014A8] transition-all duration-300 flex items-center space-x-2 ${
                 showLiskBadge
                   ? "bg-[#0014A8] text-white scale-105 shadow-lg"
@@ -185,17 +439,18 @@ export default function CertificatePreview({
               <span className="font-bold text-lg font-gill-sans">
                 Powered by Lisk Partnership
               </span>
-              </div>
-              {showLiskBadge && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-4 py-2 bg-black text-white text-sm rounded-lg shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  Blockchain-verified authenticity
-                </div>
-              )}
             </div>
+            {showLiskBadge && (
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-4 py-2 bg-black text-white text-sm rounded-lg shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Blockchain-verified authenticity
+              </div>
+            )}
           </div>
+        </div>
+
         {/* QR Code & Verification Code */}
         <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 md:px-8 mt-8">
-            <div className="text-left mb-6 md:mb-0">
+          <div className="text-left mb-6 md:mb-0">
             <p className="text-base font-bold text-[#00FF7F] font-gill-sans mb-2">
               Verification Code:
             </p>
@@ -208,7 +463,7 @@ export default function CertificatePreview({
               Use this code to verify certificate authenticity
             </p>
           </div>
-            <div className="text-center">
+          <div className="text-center">
             <div className="inline-block bg-white p-3 rounded-xl shadow-xl border-2 border-[#0014A8]">
               {verificationUrl && (
                 <QRCodeGenerator value={verificationUrl} size={140} />
@@ -220,6 +475,7 @@ export default function CertificatePreview({
           </div>
         </div>
       </div>
+
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-4 justify-center mt-6">
         <button

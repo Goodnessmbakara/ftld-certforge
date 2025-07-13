@@ -57,12 +57,18 @@ export default function AuthModal({
         if (error) throw error;
         if (data.user) {
           // Insert into custom users table
-          await supabase.from("users").upsert({
+          const { error: userError } = await supabase.from("users").upsert({
             email,
             display_name: displayName,
             phone,
             role: "user",
           });
+
+          if (userError) {
+            console.error("Error saving user profile:", userError);
+            // Still show success for auth, but log the profile error
+          }
+
           setSignupSuccess(true); // Show success message
           onSuccess({ ...data.user, display_name: displayName, phone });
         }
